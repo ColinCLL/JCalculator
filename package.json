@@ -1,0 +1,27 @@
+{
+  "name": "jcalculator",
+  "version": "1.0.0",
+  "description": "json calculator,json sql in javascript",
+  "main": "JCalculator.js",
+  "scripts": {
+    "test": "dev"
+  },
+  "keywords": [
+    "jcalculator",
+    "sql\u001b[D\u001b[D\u001b[Djson",
+    "sql",
+    "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
+    "\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[D\u001b[D\u001b[D\u001b[D",
+    "json",
+    "calculator"
+  ],
+  "author": "Colin Chen",
+  "license": "MIT",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^4.0.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-uglify": "^3.0.0",
+    "gulp-webserver": "^0.9.1"
+  }
+}

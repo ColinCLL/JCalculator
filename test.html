@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script src="./JCalculator.js"></script>
+	<script>
+	var json=[
+		{aa:100,cc:300,dd:400,groupBy:1},
+		{aa:100,bb:200,cc:350,dd:400,groupBy:1},
+		{aa:100,bb:200,cc:350,dd:400,groupBy:1},
+		{aa:100,bb:200,cc:300,dd:400,groupBy:1},
+		{aa:100,bb:200,cc:150,dd:400,groupBy:2},
+		{aa:100,bb:100,cc:150,dd:400,groupBy:2},
+		{aa:100,bb:200,cc:150,dd:400,groupBy:2},
+		{aa:100,bb:200,cc:300,dd:400,groupBy:2},
+		{aa:100,bb:200,cc:300,dd:400,groupBy:2},
+		{aa:200,bb:200,cc:300,dd:400,groupBy:2}
+	]
+	var aa=jc.sql({
+		select:{
+			col:["groupBy","bb"],
+			sum:["cc","dd"],
+			count:["bb"],
+			// sum:{
+			// 	s_cc:"cc",
+			// 	s_dd:function(row){
+			// 		return row.dd
+			// 	},
+			// 	s_cd:function(row){
+			// 		return row.cc+c.dd;
+			// 	}
+			// },
+			avg:{
+				a_cc:"cc",
+				a_dd:function(row){
+					return row.dd
+				},
+				a_cd:function(row){
+					return row.cc+row.dd;
+				}
+			},
+			max:"aa",
+			//min:"aa"
+		},
+		from:json,
+		// where:function(row){
+		// 	return row.cc>200
+		// },
+		where:{cc:150,bb:100},
+		groupBy:["groupBy","bb"],
+		// having:["sum_aa>0"]
+		orderBy:"cc"
+	})
+	</script>
+</body>
+</html>
