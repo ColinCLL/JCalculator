@@ -410,7 +410,7 @@
     * @param {array} table 数据
     * @param {object|function} order 排序配置 
     */
-    function sqlOrder(table, order) {
+    function sqlOrder (table, order) {
       if (!order) return table;
       if (jc.isObject(order) && !jc.isFunction(order)) {
         var keys = nativeKeys(order);
@@ -433,8 +433,22 @@
       }
       return table;
     }
-
     // orderBy 部分代码结束
+
+    function sqlLimit (table, limit) {
+      if (!limit) return table;
+      var limitData = [];
+      var len = table.length;
+      var i;
+      if (jc.isNumber(order)) {
+        i = 0;
+      } else if (jc.isArray(order)) {
+        // if (order[0] > len) 
+      }
+      for ( ; len = len > limit ? limit : len; i < len; i++) {
+          limitData.push(table[i]);
+      }
+    }
 
     // 类型判断
     jc.isObjEmpty = function (obj) { 
