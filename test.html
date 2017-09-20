@@ -5,9 +5,9 @@
 	<title>Document</title>
 </head>
 <body>
-	<script src="./JCalculator.js"></script>
+	<script src = "./JCalculator.js"></script>
 	<script>
-	var json=[
+	var json = [
 		{aa:100,cc:300,dd:400,groupBy:1},
 		{aa:100,bb:200,cc:350,dd:400,groupBy:1},
 		{aa:100,bb:200,cc:350,dd:400,groupBy:1},
@@ -21,33 +21,35 @@
 	];
 	var data=jc.sql({
 		select:{
-			col:["groupBy","bb"],
-			sum:["cc","dd"],
+			col:["groupBy", "bb"],
+			sum:["cc", "dd"],
 			count:["bb"],
 			avg:{
-				a_cc:"cc",
-				a_dd:function(row){
+				a_cc: "cc",
+				a_dd: function(row){
 					return row.dd
 				},
-				a_cd:function(row){
-					return row.cc+row.dd;
+				a_cd: function(row){
+					return row.cc + row.dd;
 				}
 			},
-			max:"aa",
+			max: "aa",
 		},
-		from:json,
-		// where:function(row){
-		// 	return row.cc>200
+		from: json,
+		// where: function(row){
+		// 	return row.cc > 200
 		// },
-		// where:{cc:150,bb:100},
+		// where:{cc: 150, bb: 100},
 		groupBy:["groupBy","bb"],
 		// having:{max_aa: ">100", sum_bb: ">800"},
-		// orderBy:{bb:"desc",sum_cc:"acs"}
-		orderBy:function (left, right) {
+		// orderBy: {bb: "desc", sum_cc: "acs"}
+		orderBy: function (left, right) {
 			console.log(left.sum_cc > right.sum_cc)
 			return left.sum_cc < right.sum_cc;
 		}
 	})
+  console.log(data);
+  console.log(json);
 	</script>
 </body>
 </html>

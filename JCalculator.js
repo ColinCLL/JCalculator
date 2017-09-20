@@ -81,7 +81,7 @@
     *
     * @public
     * @param {array} val 数据
-    * @param {object} key 过滤对象模板
+    * @param {object} key 过滤条件
     */
     jc.where = function (val, key) {
       return jc.filter(val, function (d) {
@@ -97,6 +97,13 @@
       return Array.from(set);
     }
 
+    /**
+    * 加法
+    *
+    * @public
+    * @param {array} val 数据
+    * @param {object|array|string} key 相加的键配置
+    */
     jc.sum = function (val, key) {
       var sum, length = 0, count = 0;
       if (jc.isArray(val)) {
@@ -130,6 +137,13 @@
       return sum;
     }
 
+    /**
+    * 分组
+    *
+    * @public
+    * @param {table} val 数据
+    * @param {object|array|string} key 分组条件
+    */
     jc.group = function (val, key) {
       var groups = {};
       jc.map(val, function (row, i) {
@@ -159,6 +173,7 @@
       selectData = sqlSelect(havingData, query.select);
       orderData = sqlOrder(selectData, query.orderBy);
       console.log(orderData);
+      return orderData;
     }
 
     function errorCheck (select) {
