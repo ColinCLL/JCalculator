@@ -18,21 +18,12 @@
 		{aa:100,bb:200,cc:300,dd:400,groupBy:2},
 		{aa:100,bb:200,cc:300,dd:400,groupBy:2},
 		{aa:200,bb:200,cc:300,dd:400,groupBy:2}
-	]
-	var aa=jc.sql({
+	];
+	var data=jc.sql({
 		select:{
 			col:["groupBy","bb"],
 			sum:["cc","dd"],
 			count:["bb"],
-			// sum:{
-			// 	s_cc:"cc",
-			// 	s_dd:function(row){
-			// 		return row.dd
-			// 	},
-			// 	s_cd:function(row){
-			// 		return row.cc+c.dd;
-			// 	}
-			// },
 			avg:{
 				a_cc:"cc",
 				a_dd:function(row){
@@ -43,16 +34,19 @@
 				}
 			},
 			max:"aa",
-			//min:"aa"
 		},
 		from:json,
 		// where:function(row){
 		// 	return row.cc>200
 		// },
-		where:{cc:150,bb:100},
+		// where:{cc:150,bb:100},
 		groupBy:["groupBy","bb"],
-		// having:["sum_aa>0"]
-		orderBy:"cc"
+		// having:{max_aa: ">100", sum_bb: ">800"},
+		// orderBy:{bb:"desc",sum_cc:"acs"}
+		orderBy:function (left, right) {
+			console.log(left.sum_cc > right.sum_cc)
+			return left.sum_cc < right.sum_cc;
+		}
 	})
 	</script>
 </body>
