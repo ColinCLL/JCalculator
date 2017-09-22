@@ -13,6 +13,7 @@
       //  定义了一些ECMAScript 5方法 
     var nativeIsArray = Array.isArray,
       nativeKeys = Object.keys,
+      nativeValues = Object.values,
       nativeCreate = Object.create;
 
     //  创建一个jc对象, 保留将来有拓展成支持链式的可能 
@@ -42,7 +43,7 @@
     */
     jc.map = function (val, fn) {
       if (jc.isArray(val)) return val.map(fn);
-      if (jc.isObject(val)) return Object.values(val).map(fn)
+      if (jc.isObject(val)) return nativeValues(val).map(fn)
     };
 
     /**
@@ -85,7 +86,7 @@
     */
     jc.where = function (val, key) {
       return jc.filter(val, function (d) {
-        return Object.keys(key).every(function (k) {
+        return nativeKeys(key).every(function (k) {
           return key[k] === d[k];
         })
       });
@@ -156,6 +157,7 @@
           k.push(row[key])
         } else if (jc.isFunction(key)) {
           k = key(row, i);
+          console.log(k);
         }
         if (!groups[k]) groups[k] = [];
         groups[k].push(row);
@@ -164,6 +166,7 @@
     }
 
     jc.sql = function (query) {
+      errorCheck(query);
       if (!query.from) return;
       var table = query.from;
       var whereData, groupData, selectData, orderData, havingData;
@@ -176,9 +179,45 @@
       return orderData;
     }
 
-    function errorCheck (select) {
-      var col = selectType("", select.col);
-      if (!select) throw new Error("Error select", "Select is not defined");
+    function errorCheck (query) {
+      
+      if (!query.from) throw new Error("From is not defined", "Error from");
+      if (!query.select) throw new Error("Select is not defined", "Error select",);
+      groupCheck(query);
+    }
+
+    function groupCheck (query) {
+      var col = selectType("", query.select.col);
+          col = nativeValues(col);
+      var group = [];
+      var flag = false; 
+      if (jc.isArray(query.groupBy)) {
+        jc.map(query.groupBy, function (a, i) {
+          group.push(a);
+        })
+      } else if (jc.isString(query.groupBy)) {
+        group.push(query.groupBy)
+      } else if (jc.isFunction(query.groupBy)) {
+        group = [query.groupBy];
+      }
+      for (var i = 0, len = col.length; i < len; i++ ) {
+        for (var j = 0; j < len; j++) {
+          if (col[i] == group[j]) {
+            flag = true;
+            break;
+          } else if (jc.isObject(col[i]) && jc.isObject(group[j])) {
+            if(String(col[i]) ===  String(group[j])) {
+              flag = true;
+              break;
+            }
+          }
+        }
+        if (!flag) {
+          throw new Error("groupBy should contain select.col","Error groupBy", );
+        } else {
+          flag = false; 
+        }
+      }
     }
 
     function sqlWhere (table, where) {
@@ -374,8 +413,8 @@
     function sqlOrder(table, order) {
       if (!order) return table;
       if (jc.isObject(order) && !jc.isFunction(order)) {
-        var keys = Object.keys(order);
-        var vals = Object.values(order);
+        var keys = nativeKeys(order);
+        var vals = nativeValues(order);
         table.sort(function (left, right) {
           var len = keys.length, key, val;
           for (var i = 0; i < len; i++){

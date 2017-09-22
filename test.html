@@ -19,9 +19,16 @@
 		{aa:100,bb:200,cc:300,dd:400,groupBy:2},
 		{aa:200,bb:200,cc:300,dd:400,groupBy:2}
 	];
+
+	var foo = function (a) {
+		return a.bb
+	}
 	var data=jc.sql({
 		select:{
-			col:["groupBy", "bb"],
+			// col:["groupBy", "bb"],
+			col:{"groupBy": "groupBy", bb: function (a) {
+		  		return a.bb
+		 	}},
 			sum:["cc", "dd"],
 			count:["bb"],
 			avg:{
@@ -40,16 +47,15 @@
 		// 	return row.cc > 200
 		// },
 		// where:{cc: 150, bb: 100},
-		groupBy:["groupBy","bb"],
+		groupBy:["groupBy", function (a) {
+		  		return a.bb
+		 	}],
 		// having:{max_aa: ">100", sum_bb: ">800"},
 		// orderBy: {bb: "desc", sum_cc: "acs"}
 		orderBy: function (left, right) {
-			console.log(left.sum_cc > right.sum_cc)
 			return left.sum_cc < right.sum_cc;
 		}
 	})
-  console.log(data);
-  console.log(json);
 	</script>
 </body>
 </html>
