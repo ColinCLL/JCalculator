@@ -169,20 +169,20 @@
       errorCheck(query);
       if (!query.from) return;
       var table = query.from;
-      var whereData, groupData, selectData, orderData, havingData;
+      var whereData, groupData, havingData, selectData, orderData,limitData;
       whereData = sqlWhere(table, query.where);
       groupData = sqlGroup(whereData, query.groupBy);
       havingData = sqlhaving(groupData, query.having)
       selectData = sqlSelect(havingData, query.select);
       orderData = sqlOrder(selectData, query.orderBy);
-      console.log(orderData);
+      limitData = sqlLimit(orderData, query.limit);
+      console.log(limitData,query);
       return orderData;
     }
 
     function errorCheck (query) {
-      
       if (!query.from) throw new Error("From is not defined", "Error from");
-      if (!query.select) throw new Error("Select is not defined", "Error select",);
+      if (!query.select) throw new Error("Select is not defined", "Error select");
       groupCheck(query);
     }
 
@@ -436,18 +436,25 @@
     // orderBy 部分代码结束
 
     function sqlLimit (table, limit) {
-      if (!limit) return table;
+      if (!limit&&limit!=0) return table;
       var limitData = [];
       var len = table.length;
       var i;
-      if (jc.isNumber(order)) {
+      if (jc.isNumber(limit)) {
         i = 0;
-      } else if (jc.isArray(order)) {
-        // if (order[0] > len) 
+      } else if (jc.isArray(limit)) {
+        if (limit[0] > len) {
+          return [];
+        } else if (limit[0] < len){
+          i=limit[0]
+        }
+        len = limit[0] + limit[1]||0 < len ? limit[0] + limit[1]||0 : len;
       }
-      for ( ; len = len > limit ? limit : len; i < len; i++) {
+      console.log(i,len)
+      for (; i < len; i++) {
           limitData.push(table[i]);
       }
+      return limitData;
     }
 
     // 类型判断
