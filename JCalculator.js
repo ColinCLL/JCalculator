@@ -151,13 +151,17 @@
         var k = [];
         if (jc.isArray(key)) {
           jc.map(key, function (a, i) {
-            k.push(row[a]);
+            if (jc.isFunction(a)) {
+              k.push(a(row));
+            } else {
+              k.push(row[a]);
+            }
+            
           })
         } else if (jc.isString(key)) {
           k.push(row[key])
         } else if (jc.isFunction(key)) {
           k = key(row, i);
-          console.log(k);
         }
         if (!groups[k]) groups[k] = [];
         groups[k].push(row);
@@ -176,7 +180,6 @@
       selectData = sqlSelect(havingData, query.select);
       orderData = sqlOrder(selectData, query.orderBy);
       limitData = sqlLimit(orderData, query.limit);
-      console.log(limitData,query);
       return orderData;
     }
 
@@ -187,19 +190,22 @@
     }
 
     function groupCheck (query) {
-      var col = selectType("", query.select.col);
+      var select = query.select, groupBy = query.groupBy;
+      if(select.col && (select.sum || select.avg || select.count || select.max || select.min) && !!query.groupBy) return;
+      var col = selectType("", select.col);
           col = nativeValues(col);
       var group = [];
       var flag = false; 
-      if (jc.isArray(query.groupBy)) {
-        jc.map(query.groupBy, function (a, i) {
+      if (jc.isArray(groupBy)) {
+        jc.map(groupBy, function (a, i) {
           group.push(a);
         })
-      } else if (jc.isString(query.groupBy)) {
-        group.push(query.groupBy)
-      } else if (jc.isFunction(query.groupBy)) {
-        group = [query.groupBy];
+      } else if (jc.isString(groupBy)) {
+        group.push(groupBy)
+      } else if (jc.isFunction(groupBy)) {
+        group = [groupBy];
       }
+
       for (var i = 0, len = col.length; i < len; i++ ) {
         for (var j = 0; j < len; j++) {
           if (col[i] == group[j]) {
@@ -448,9 +454,8 @@
         } else if (limit[0] < len){
           i=limit[0]
         }
-        len = limit[0] + limit[1]||0 < len ? limit[0] + limit[1]||0 : len;
+        len = limit[0] + limit[1] < len ? limit[0] + limit[1] : len;
       }
-      console.log(i,len)
       for (; i < len; i++) {
           limitData.push(table[i]);
       }

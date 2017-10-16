@@ -26,9 +26,9 @@
 	var data=jc.sql({
 		select:{
 			// col:["groupBy", "bb"],
-			col:{"groupBy": "groupBy", bb: function (a) {
-		  		return a.bb
-		 	}},
+			col:{bb:function (a) {
+         return a.aa
+       }},
 			sum:["cc", "dd"],
 			count:["bb"],
 			avg:{
@@ -47,16 +47,91 @@
 		// 	return row.cc > 200
 		// },
 		// where:{cc: 150, bb: 100},
-		groupBy:["groupBy", function (a) {
-		  		return a.bb
-		 	}],
+		// groupBy:["groupBy", function (a) {
+		//   		return a.bb
+		//  	}],
+    groupBy:[function (a) {
+         return a.aa
+       }],
 		// having:{max_aa: ">100", sum_bb: ">800"},
 		// orderBy: {bb: "desc", sum_cc: "acs"}
 		orderBy: function (left, right) {
 			return left.sum_cc < right.sum_cc;
 		},
-		limit:[0,1]
+		limit:[0,3]
 	})
+
+
+
+  var table = [
+    {time:"10月1日", inPerson:20, outPerson:1000, region: "广州"},
+    {time:"10月1日", inPerson:13, outPerson:900, region: "深圳"},
+    {time:"10月2日", inPerson:15, outPerson:900, region: "广州"},
+    {time:"10月2日", inPerson:15, outPerson:1000, region: "深圳"},
+    {time:"10月3日", inPerson:15, outPerson:100, region: "广州"},
+    {time:"10月3日", inPerson:15, outPerson:100, region: "深圳"},
+    {time:"10月4日", inPerson:90, outPerson:60, region: "广州"},
+    {time:"10月4日", inPerson:70, outPerson:50, region: "深圳"},
+    {time:"10月5日", inPerson:500, outPerson:39, region: "广州"},
+    {time:"10月5日", inPerson:350, outPerson:30, region: "深圳"},
+    {time:"10月6日", inPerson:900, outPerson:15, region: "广州"},
+    {time:"10月6日", inPerson:1000, outPerson:15, region: "深圳"},
+    {time:"10月7日", inPerson:900, outPerson:10, region: "广州"},
+    {time:"10月7日", inPerson:1200, outPerson:7, region: "深圳"},
+  ]
+
+  var data1 = jc.sql({
+    select : {
+      sum : ["inPerson","outPerson"],
+      avg : ["inPerson","outPerson"]
+    },
+    from : table
+  })
+  console.log("国庆广深总人口流动分析");
+  console.log(data1);
+
+    var data2 = jc.sql({
+    select : {
+      col : ["time","region"],
+      sum : ["inPerson","outPerson"],
+      avg : ["inPerson","outPerson"]
+    },
+    from : table,
+    where:{region:"广州"},
+    groupBy:["time","region"]
+  })
+  console.log("广州总人口流动分析");
+  console.log(data2);
+
+
+  var data3 = jc.sql({
+    select : {
+      col:{
+        "城市":"region"
+      },
+      sum : {
+        "流入人口总和":"inPerson",
+        "流出人口总和":"outPerson",
+        "流入流出人口总和":function(row){
+          return row.inPerson + row.outPerson
+        }
+      },
+      avg : {
+        "流入人口平均数":"inPerson",
+        "流出人口平均数":"outPerson",
+        "流入流出人口平均数":function(row){
+          return row.inPerson + row.outPerson
+        }
+      }
+    },
+    from : table,
+    groupBy:"region"
+  })
+  console.log("城市总人口流动分析");
+  console.log(data3)
+
+
+
 	</script>
 </body>
 </html>
