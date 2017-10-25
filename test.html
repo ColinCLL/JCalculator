@@ -7,62 +7,6 @@
 <body>
 	<script src = "./JCalculator.js"></script>
 	<script>
-	var json = [
-		{aa:100,cc:300,dd:400,groupBy:1},
-		{aa:100,bb:200,cc:350,dd:400,groupBy:1},
-		{aa:100,bb:200,cc:350,dd:400,groupBy:1},
-		{aa:100,bb:200,cc:300,dd:400,groupBy:1},
-		{aa:100,bb:200,cc:150,dd:400,groupBy:2},
-		{aa:100,bb:100,cc:150,dd:400,groupBy:2},
-		{aa:100,bb:200,cc:150,dd:400,groupBy:2},
-		{aa:100,bb:200,cc:300,dd:400,groupBy:2},
-		{aa:100,bb:200,cc:300,dd:400,groupBy:2},
-		{aa:200,bb:200,cc:300,dd:400,groupBy:2}
-	];
-
-	var foo = function (a) {
-		return a.bb
-	}
-	var data=jc.sql({
-		select:{
-			// col:["groupBy", "bb"],
-			col:{bb:function (a) {
-         return a.aa
-       }},
-			sum:["cc", "dd"],
-			count:["bb"],
-			avg:{
-				a_cc: "cc",
-				a_dd: function(row){
-					return row.dd
-				},
-				a_cd: function(row){
-					return row.cc + row.dd;
-				}
-			},
-			max: "aa",
-		},
-		from: json,
-		// where: function(row){
-		// 	return row.cc > 200
-		// },
-		// where:{cc: 150, bb: 100},
-		// groupBy:["groupBy", function (a) {
-		//   		return a.bb
-		//  	}],
-    groupBy:[function (a) {
-         return a.aa
-       }],
-		// having:{max_aa: ">100", sum_bb: ">800"},
-		// orderBy: {bb: "desc", sum_cc: "acs"}
-		orderBy: function (left, right) {
-			return left.sum_cc < right.sum_cc;
-		},
-		limit:[0,3]
-	})
-
-
-
   var table = [
     {time:"10月1日", inPerson:20, outPerson:1000, region: "广州"},
     {time:"10月1日", inPerson:13, outPerson:900, region: "深圳"},
@@ -77,7 +21,7 @@
     {time:"10月6日", inPerson:900, outPerson:15, region: "广州"},
     {time:"10月6日", inPerson:1000, outPerson:15, region: "深圳"},
     {time:"10月7日", inPerson:900, outPerson:10, region: "广州"},
-    {time:"10月7日", inPerson:1200, outPerson:7, region: "深圳"},
+    {time:"10月7日", inPerson:1200, outPerson:7, region: "深圳"}
   ]
 
   var data1 = jc.sql({
@@ -90,7 +34,7 @@
   console.log("国庆广深总人口流动分析");
   console.log(data1);
 
-    var data2 = jc.sql({
+  var data2 = jc.sql({
     select : {
       col : ["time","region"],
       sum : ["inPerson","outPerson"],
@@ -130,6 +74,33 @@
   console.log("城市总人口流动分析");
   console.log(data3)
 
+
+  var data4 = jc.sql({
+    select : {
+      col:{
+        "时间":"time"
+      },
+      sum: {
+        "流入人口总和":"inPerson",
+        "流出人口总和":"outPerson",
+        "流入流出人口总和":function(row){
+          return row.inPerson + row.outPerson
+        }
+      },
+      avg: {
+        "流入人口平均数":"inPerson",
+        "流出人口平均数":"outPerson",
+        "流入流出人口平均数":function(row){
+          return row.inPerson + row.outPerson
+        }
+      }
+    },
+    from: table,
+    groupBy:"time",
+    having:{"sum_inPerson+outPerson":">1000"}
+  })
+  console.log("广深总人口流动大于1000Wd的日期分析");
+  console.log(data4)
 
 
 	</script>

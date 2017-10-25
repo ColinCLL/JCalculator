@@ -10,13 +10,13 @@
       slice = ArrayProto.slice,
       toString = ObjProto.toString,
       hasOwnProperty = ObjProto.hasOwnProperty;
-      //  定义了一些ECMAScript 5方法 
+    //  定义了一些ECMAScript 5方法 
     var nativeIsArray = Array.isArray,
       nativeKeys = Object.keys,
       nativeValues = Object.values,
       nativeCreate = Object.create;
 
-    //  创建一个jc对象, 保留将来有拓展成支持链式的可能 
+    // 创建一个jc对象, 保留将来有拓展成支持链式的可能 
     var jc = function (obj) {
       if (obj instanceof jc) return obj;
       if (!(this instanceof jc)) return new jc(obj);
@@ -219,7 +219,7 @@
           }
         }
         if (!flag) {
-          throw new Error("groupBy should contain select.col","Error groupBy", );
+          throw new Error("groupBy should contain select.col","Error groupBy");
         } else {
           flag = false; 
         }
@@ -237,27 +237,40 @@
       return jc.group(table, group);
     }
 
+    /**
+    * having
+    *
+    * @private
+    * @param {table} table 数据
+    * @param {object} having 组筛选配置
+    */
     function sqlhaving(table, having) {
       if(!having) return table;
       var sumObj = {}, avgObj = {}, maxObj = {}, minObj = {}, countObj = {};
       var havingData = {};
       jc.forIn(having, function (key, val) {
-        var keyArr = key.split("_");
-        switch (keyArr[0]) {
+        var reg=/[1-9a-zA-z_\$\@]+/g;
+        var splitKey = key.split("_");
+        var type = splitKey.shift(); // 首个为聚合运算类型
+        var formula = splitKey.join("_"); //
+        formula = formula.replace(reg,function(match){
+          return "row['"+match+"']";
+        }); 
+        switch (type) {
           case "sum":
-            sumObj[key] = keyArr[1];
+            sumObj[key] = function(row) {return eval(formula)};
             break;
           case "avg":
-            avgObj[key] = keyArr[1];
+            avgObj[key] = function(row) {return eval(formula)};
             break;
           case "max":
-            maxObj[key] = keyArr[1];
+            maxObj[key] = function(row) {return eval(formula)};
             break;
           case "min":
-            minObj[key] = keyArr[1];
+            minObj[key] = function(row) {return eval(formula)};
             break;
           case "count":
-            countObj[key] = keyArr[1];
+            countObj[key] = function(row) {return eval(formula)};
             break;
         }
       })
@@ -409,6 +422,8 @@
     }
     // select部分代码结束
 
+
+
     /**
     * 排序
     *
@@ -441,6 +456,13 @@
     }
     // orderBy 部分代码结束
 
+    /**
+    * 检索记录行
+    *
+    * @private
+    * @param {array} table 数据
+    * @param {object|array} limit 检索行
+    */
     function sqlLimit (table, limit) {
       if (!limit&&limit!=0) return table;
       var limitData = [];
