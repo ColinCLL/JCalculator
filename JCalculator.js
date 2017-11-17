@@ -84,32 +84,44 @@
     * @param {array} val 数据
     * @param {object} key 过滤条件
     */
-    jc.where = function (val, key) {
-      return jc.filter(val, function (d) {
+    jc.where = function (data, key) {
+      return jc.filter(data, function (d) {
         return nativeKeys(key).every(function (k) {
           return key[k] === d[k];
         })
       });
     }
 
-    // es6去重 
-    function unique (arr) {
-      var set = new Set(arr);
-      return Array.from(set);
+    /**
+    * 去重
+    *
+    * @public
+    * @param {array} data 数据
+    */
+    jc.unique = function (data) {
+      var newObj = {}, newArr=[];
+      var arr = jc.map(data, function (d) {
+        var item = JSON.stringify(d);
+        newObj[item] = d;
+      });
+      jc.forIn(newObj, function (key,row) {
+        newArr.push(row);
+      });
+      return newArr;
     }
 
     /**
     * 加法
     *
     * @public
-    * @param {array} val 数据
+    * @param {array} data 数据
     * @param {object|array|string} key 相加的键配置
     */
-    jc.sum = function (val, key) {
+    jc.sum = function (data, key) {
       var sum, length = 0, count = 0;
-      if (jc.isArray(val)) {
+      if (jc.isArray(data)) {
         sum = !key || jc.isString(key) ? 0 : {},
-        jc.map(val, function (row) {
+        jc.map(data, function (row) {
           if (!key && (jc.isNumber(row))) {
             sum += row || 0;
           } else if (jc.isArray(key) && jc.isObject(row)) {
@@ -123,9 +135,9 @@
         });
       }
 
-      if (!jc.isArray(val) && jc.isObject(val)) {
+      if (!jc.isArray(data) && jc.isObject(data)) {
         sum = 0;
-        jc.forIn(val, function (k, row, i) {
+        jc.forIn(data, function (k, row, i) {
           if (!!key) {
             jc.map(key, function (k1, j) {
               if (k == k1) sum += row[k];
