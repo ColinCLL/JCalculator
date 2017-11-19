@@ -8,10 +8,10 @@
 	<script src = "./JCalculator.js"></script>
 	<script>
   var table = [
-    {time:"10月1日", inPerson:20, outPerson:1000, region: "广州"},
-    {time:"10月1日", inPerson:13, outPerson:900, region: "深圳"},
-    {time:"10月2日", inPerson:15, outPerson:900, region: "广州"},
-    {time:"10月2日", inPerson:15, outPerson:1000, region: "深圳"},
+    {time:"10月1日", inPerson:20, outPerson:1000, region: "广州",fly:12},
+    {time:"10月1日", inPerson:13, outPerson:900, region: "深圳",fly:2},
+    {time:"10月2日", inPerson:15, outPerson:900, region: "广州",fly:null},
+    {time:"10月2日", inPerson:15, outPerson:1000, region: "深圳",fly:0},
     {time:"10月3日", inPerson:15, outPerson:100, region: "广州"},
     {time:"10月3日", inPerson:15, outPerson:100, region: "深圳"},
     {time:"10月4日", inPerson:90, outPerson:60, region: "广州"},
@@ -26,13 +26,61 @@
 
   var data1 = jc.sql({
     select: {
-      sum: ["inPerson","outPerson"],
-      avg: ["inPerson","outPerson"]
+      sum: ["inPerson","outPerson","fly"],
+      avg: ["inPerson","outPerson","fly"],
+      count: "fly"
     },
     from: table
   })
   console.log("国庆广深总人口流动分析");
   console.log(data1);
+
+  var sum1 = jc.sql({
+    select: {
+      sum: "inPerson"
+    },
+    from: table
+  })
+  console.log("sum1");
+  console.log(sum1);
+
+  var sum2 = jc.sql({
+    select: {
+      sum: ["inPerson","outPerson"]
+    },
+    from: table
+  })
+  console.log("sum2");
+  console.log(sum2);
+  // {sum_inPerson: 5103, sum_outPerson: 4226}
+
+  var sum3 = jc.sql({
+    select: {
+      sum: {
+        "流入人口总和":function  (row) {
+          return row.inPerson
+        },
+        "流出人口总和":"outPerson",
+        流动人口总和:function (row) {
+          return row.inPerson + row.outPerson;
+        }
+      }
+    },
+    from: table
+  })
+  console.log("sum3");
+  console.log(sum3);
+  // 输出：{流入人口总和: 5103, 流出人口总和: 4226, 流动人口总和: 9329}
+
+  var count = jc.sql({
+    select: {
+      count: ["inPerson","outPerson","fly"]
+    },
+    from: table
+  })
+  console.log("count");
+  console.log(JSON.stringify(count));
+  //输出：[{avg_inPerson: 364.5, avg_outPerson: 301.85714285714283, avg_fly: 4.666666666666667}]
 
   var data2 = jc.sql({
     select: {

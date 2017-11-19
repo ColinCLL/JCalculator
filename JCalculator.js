@@ -187,7 +187,7 @@
       var table = query.from;
       var whereData, groupData, havingData, selectData, orderData,limitData;
       whereData = sqlWhere(table, query.where);
-      groupData = sqlGroup(whereData, query.groupBy);
+      groupData = sqlGroup(whereData, query);
       havingData = sqlhaving(groupData, query.having)
       selectData = sqlSelect(havingData, query.select);
       orderData = sqlOrder(selectData, query.orderBy);
@@ -203,7 +203,8 @@
 
     function groupCheck (query) {
       var select = query.select, groupBy = query.groupBy;
-      if(select.col && (select.sum || select.avg || select.count || select.max || select.min) && !!query.groupBy) return;
+      if(!(select.sum || select.avg || select.count || select.max || select.min)) return;
+      if(select.col && !!query.groupBy) return;
       var col = selectType("", select.col);
           col = nativeValues(col);
       var group = [];
@@ -244,9 +245,15 @@
       if (jc.isObject(where)) return jc.where(table, where);
     }
 
-    function sqlGroup (table, group) {
-      if (!group) return {table : table};
-      return jc.group(table, group);
+    function sqlGroup (table, query) {
+      var flag;
+      jc.forIn(query.select, function (key, val) {
+       val = key == "col" ? false : true ;
+        flag = !!val || flag;
+      })
+      if (!query.group && !flag) return table;                     // 只有col选项 
+      if (!query.group && !query.select.col) return {table: table};// 没有group和col
+      return jc.group(table, query.groupBy); // 有group
     }
 
     /**
@@ -323,12 +330,17 @@
       if (select.max) var maxObj = selectType("max_", select.max);
       if (select.min) var minObj = selectType("min_", select.min);
       if (select.count) var countObj = selectType("count_", select.count);
-
-      jc.forIn(table, function (groupKey, groupItem, obj, i) {
-        var row = groupCal(groupItem, colObj, sumObj, avgObj, maxObj, minObj, countObj);
-        selectData.push(row);
-      });
-
+      if (!jc.isArray(table)){
+        jc.forIn(table, function (groupKey, groupItem, obj, i) {
+          var row = groupCal(groupItem, colObj, sumObj, avgObj, maxObj, minObj, countObj);
+          selectData.push(row);
+        });
+      } else {
+        jc.map(table, function (groupItem,i) {
+          var row = groupCal([groupItem], colObj, sumObj, avgObj, maxObj, minObj, countObj);
+          selectData.push(row);
+        });
+      }
       return selectData;
     }
 
@@ -392,7 +404,7 @@
             if (!validLength[key]) validLength[key] = 0;
             var rowVal = jc.isFunction(val) ? val(row) : row[val];
             newRow[key] ? newRow[key] += rowVal || 0 : newRow[key] = rowVal || 0;
-            if (!jc.isUndefined(newRow[key])) validLength[key]++;
+            if (rowVal||rowVal==0) validLength[key]++;
           })
         }
 
