@@ -251,8 +251,8 @@
        val = key == "col" ? false : true ;
         flag = !!val || flag;
       })
-      if (!query.group && !flag) return table;                     // 只有col选项 
-      if (!query.group && !query.select.col) return {table: table};// 没有group和col
+      if (!query.groupBy && !flag) return table;                     // 只有col选项 
+      if (!query.groupBy && !query.select.col) return {table: table};// 没有group和col
       return jc.group(table, query.groupBy); // 有group
     }
 
