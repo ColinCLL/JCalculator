@@ -427,7 +427,7 @@
             var rowVal = jc.isFunction(val) ? val(row) : row[val];
             if (jc.isUndefined(newRow[key])) newRow[key] = 0;
             switch (key) {
-              case "*" :
+              case "count_*" :
                 newRow[key] = itemLength;
                 break;
               default :
