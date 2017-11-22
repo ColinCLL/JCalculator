@@ -192,7 +192,7 @@
       selectData = sqlSelect(havingData, query.select);
       orderData = sqlOrder(selectData, query.orderBy);
       limitData = sqlLimit(orderData, query.limit);
-      return orderData;
+      return limitData;
     }
 
     function errorCheck (query) {
