@@ -74,13 +74,101 @@
 
   var count = jc.sql({
     select: {
-      count: ["inPerson","outPerson","fly"]
+      count: "*"
     },
-    from: table
+    from: table,
+    where:{time:"10月1日"}
   })
   console.log("count");
   console.log(JSON.stringify(count));
   //输出：[{avg_inPerson: 364.5, avg_outPerson: 301.85714285714283, avg_fly: 4.666666666666667}]
+
+    var count = jc.sql({
+      select: {
+        count: {
+          all:"*"
+        }
+      },
+      from: table
+    })
+    console.log("count1");
+    console.log(JSON.stringify(count));
+
+  // max: {obj}。
+  var max = jc.sql({
+    select: {
+      max: ["inPerson"]
+    },
+    from: table,
+    where: { time: "10月1日" }
+  })
+  console.log("max");
+  console.log(max);
+
+  // where: {obj}。
+  var where1 = jc.sql({
+    select: {
+      count: ["inPerson","outPerson","fly"]
+    },
+    from: table,
+    where:{time:"10月1日"}
+  })
+  console.log("where1");
+  console.log(where1);
+  // 输出：2
+
+  // where: function(row){ return true}。
+  var where2 = jc.sql({
+    select: {
+      sum: "inPerson"
+    },
+    from: table,
+    where: function (row) {
+      return row.time == "10月1日" || row.time == "10月7日"
+    }
+  })
+  console.log("where2");
+  console.log(where2);
+
+  // groupBy: {obj};
+  var groupBy1 = jc.sql({
+    select: {
+      count: ["inPerson","outPerson","fly","*"]
+    },
+    from: table,
+    groupBy:"time"
+  })
+  console.log("groupBy1");
+  console.log(JSON.stringify(groupBy1));
+  // 输出： [2]
+
+  // groupBy: function (row) { return true};
+  var groupBy2 = jc.sql({
+    select: {
+      sum: "inPerson"
+    },
+    from: table,
+    groupBy: function (row) {
+      return row.time
+    }
+  })
+  console.log("groupBy2");
+  console.log(JSON.stringify(groupBy2));
+  //输出：[{sum_inPerson: 2133}]
+
+  // groupBy: ["string", function (row) {}];
+  var groupBy3 = jc.sql({
+    select: {
+      sum: "inPerson"
+    },
+    from: table,
+    groupBy: ["fly"]
+  })
+  console.log("groupBy3");
+  console.log(JSON.stringify(groupBy3));
+  //输出：[{sum_inPerson: 2133}]
+
+
 
   var data2 = jc.sql({
     select: {
@@ -95,6 +183,8 @@
   console.log("广州总人口流动分析");
   console.log(data2);
 
+  var ttt = jc.keyArray(data2,["time","region"]);
+  console.log(ttt)
 
   var data3 = jc.sql({
     select: {
@@ -145,10 +235,14 @@
     },
     from: table,
     groupBy: "time",
-    having: {"sum_inPerson+outPerson":">1000"}
+    having: {"sum_inPerson+outPerson":">1000"},
+    orderBy:function (left, right) {
+      return left.流入人口平均数 < right.流入人口平均数;
+    },
+    limit:[0,2]
   })
   console.log("广深总人口流动大于1000Wd的日期分析");
-  console.log(data4)
+  console.log(JSON.stringify(data4))
   var arr = [1,1,2,2,34,5]
   var obj = [{test:113,text:"332"},{test:113 ,text:"332"},{test:1134, text:"332"},{test:1134,text:"332"}];
   var aaa = jc.unique(obj);
