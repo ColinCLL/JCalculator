@@ -247,6 +247,32 @@ describe("test/JCalculator.test.js", function () {
         data.should.containDeepOrdered(json);
     });
 
+    it("test group function string", function () {
+        var data = jc.sql({
+            select: {
+                col: function (row) {
+                    return row.time
+                },
+                sum: "inPerson",
+            },
+            from: table,
+            groupBy: function (row) {
+                return row.time
+            }
+        });
+
+        var json = [
+            { sum_inPerson: 33 },
+            { sum_inPerson: 30 },
+            { sum_inPerson: 30 },
+            { sum_inPerson: 160 },
+            { sum_inPerson: 850 },
+            { sum_inPerson: 1900 },
+            { sum_inPerson: 2100 }
+        ]
+        data.should.containDeepOrdered(json);
+    });
+
     it("test where obj type", function () {
         var data = jc.sql({
             select: {
@@ -374,6 +400,62 @@ describe("test/JCalculator.test.js", function () {
         ]
         data.should.containDeepOrdered(json);
     });
+
+    it("test orderBy desc", function () {
+        var data = jc.sql({
+            select: {
+                col: ["inPerson"],
+            },
+            from: table,
+            orderBy: { inPerson: "desc" }
+        });
+
+        var json = [
+            { inPerson: 1200 },
+            { inPerson: 1000 },
+            { inPerson: 900 },
+            { inPerson: 900 },
+            { inPerson: 500 },
+            { inPerson: 350 },
+            { inPerson: 90 },
+            { inPerson: 70 },
+            { inPerson: 20 },
+            { inPerson: 15 },
+            { inPerson: 15 },
+            { inPerson: 15 },
+            { inPerson: 15 },
+            { inPerson: 13 }
+        ]
+        data.should.containDeepOrdered(json);
+    });
+    
+    it("test orderBy desc", function () {
+        var data = jc.sql({
+            select: {
+                col: ["inPerson"],
+            },
+            from: table,
+            orderBy: { inPerson: "desc" }
+        });
+
+        var json = [
+            { inPerson: 1200 },
+            { inPerson: 1000 },
+            { inPerson: 900 },
+            { inPerson: 900 },
+            { inPerson: 500 },
+            { inPerson: 350 },
+            { inPerson: 90 },
+            { inPerson: 70 },
+            { inPerson: 20 },
+            { inPerson: 15 },
+            { inPerson: 15 },
+            { inPerson: 15 },
+            { inPerson: 15 },
+            { inPerson: 13 }
+        ]
+        data.should.containDeepOrdered(json);
+    });
     
     it("test limit number type", function () {
         var data = jc.sql({
@@ -429,9 +511,28 @@ describe("test/JCalculator.test.js", function () {
             limit: [15,20]
 
         });
-
-        var json = [
-        ]
-        data.should.containDeepOrdered(json);
+        data.should.containDeepOrdered([]);
     });
+
+    it("test miss from", function () {
+        (function () {
+            jc.sql({
+                select: {
+                    col: ["time", "inPerson"],
+                }
+            })
+        }).should.throw("From is not defined");
+    });
+
+    // it("test error group", function () {
+    //     (function () {
+    //         jc.sql({
+    //             select: {
+    //                 sum: ["time", "inPerson"],
+    //             },
+    //             from: table,
+    //             groupBy:"fly"
+    //         })
+    //     }).should.throw("groupBy should contain select.col");
+    // });
 });

@@ -205,7 +205,6 @@
 
   jc.sql = function (query) {
     errorCheck(query);
-    if (!query.from) return;
     var table = query.from;
     var whereData, groupData, havingData, selectData, orderData,limitData;
     whereData = sqlWhere(table, query.where);
