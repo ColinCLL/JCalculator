@@ -273,6 +273,28 @@ describe("test/JCalculator.test.js", function () {
         data.should.containDeepOrdered(json);
     });
 
+    it("test group array string", function () {
+        var data = jc.sql({
+            select: {
+                col: "time",
+                sum: "inPerson",
+            },
+            from: table,
+            groupBy: ["time"]
+        });
+
+        var json = [
+            { sum_inPerson: 33 },
+            { sum_inPerson: 30 },
+            { sum_inPerson: 30 },
+            { sum_inPerson: 160 },
+            { sum_inPerson: 850 },
+            { sum_inPerson: 1900 },
+            { sum_inPerson: 2100 }
+        ]
+        data.should.containDeepOrdered(json);
+    });
+
     it("test where obj type", function () {
         var data = jc.sql({
             select: {
@@ -524,15 +546,27 @@ describe("test/JCalculator.test.js", function () {
         }).should.throw("From is not defined");
     });
 
-    // it("test error group", function () {
-    //     (function () {
-    //         jc.sql({
-    //             select: {
-    //                 sum: ["time", "inPerson"],
-    //             },
-    //             from: table,
-    //             groupBy:"fly"
-    //         })
-    //     }).should.throw("groupBy should contain select.col");
-    // });
+    it("test error groupBy", function () {
+        (function () {
+            var data = jc.sql({
+                select: {
+                    col:["outPerson"],
+                    sum: ["inPerson"],
+                },
+                from: table,
+                groupBy:"fly"
+            })
+            console.log(data);
+        }).should.throw("groupBy should contain select.col");
+    });
+
+    it("test miss select", function () {
+        (function () {
+            var data = jc.sql({
+                from: table,
+                groupBy: "fly"
+            })
+            console.log(data);
+        }).should.throw("Select is not defined");
+    });
 });

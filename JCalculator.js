@@ -225,7 +225,7 @@
   function groupCheck (query) {
     var select = query.select, groupBy = query.groupBy;
     if(!(select.sum || select.avg || select.count || select.max || select.min)) return;
-    if(select.col && !!query.groupBy) return;
+    if(select.col && !query.groupBy) return;
     var col = selectType("", select.col);
         col = nativeValues(col);
     var group = [];
@@ -353,7 +353,7 @@
   * @param {object|array|string|undefined} select.count 列计数查询计算配置
   */
   function sqlSelect (table, select) {
-    if (!select) throw new Error("Error select", "Select is not defined");
+    if (!select) throw new Error("Select is not defined", "Error select");
     var selectData = [];
     if (select.col) var colObj = selectType("", select.col);
     if (select.sum) var sumObj = selectType("sum_", select.sum);
