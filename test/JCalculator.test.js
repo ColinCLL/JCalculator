@@ -374,8 +374,6 @@ describe("test/JCalculator.test.js", function () {
             groupBy: "time",
             having: { "sum_inPerson+outPerson": ">1000"}
         });
-
-        
         var json = [
             { time: "10月1日", in: 33 },
             { time: "10月2日", in: 30 },
@@ -397,8 +395,60 @@ describe("test/JCalculator.test.js", function () {
             groupBy: "time",
             having: { "count_fly": ">= 2" }
         });
+        var json = [
+            { time: "10月1日", in: 33 }
+        ];
+        data.should.eql(json);
+    });
 
+    it("test having max", function () {
+        var data = jc.sql({
+            select: {
+                col: ["time"],
+                sum: {
+                    in: "inPerson"
+                }
+            },
+            from: table,
+            groupBy: "time",
+            having: { "max_fly": ">= 2" }
+        });
+        var json = [
+            { time: "10月1日", in: 33 }
+        ];
+        data.should.eql(json);
+    });
 
+    it("test having min", function () {
+        var data = jc.sql({
+            select: {
+                col: ["time"],
+                sum: {
+                    in: "inPerson"
+                }
+            },
+            from: table,
+            groupBy: "time",
+            having: { "min_fly": "== 2" }
+        });
+        var json = [
+            { time: "10月1日", in: 33 }
+        ];
+        data.should.eql(json);
+    });
+
+    it("test having avg", function () {
+        var data = jc.sql({
+            select: {
+                col: ["time"],
+                sum: {
+                    in: "inPerson"
+                }
+            },
+            from: table,
+            groupBy: "time",
+            having: { "avg_fly": "== 7" }
+        });
         var json = [
             { time: "10月1日", in: 33 }
         ];
@@ -589,14 +639,6 @@ describe("test/JCalculator.test.js", function () {
         });
     });
 
-    it("test keyArray", function () {
-        var data = jc.keyArray(table, ["time", "region"]);
-        data.should.eql({
-            time: ["10月1日", "10月1日", "10月2日", "10月2日", "10月3日", "10月3日", "10月4日", "10月4日", "10月5日", "10月5日", "10月6日", "10月6日", "10月7日", "10月7日"],
-            region: ["广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳"]
-        });
-    });
-
     it("test unique", function () {
         var tb = [
             { number: 1, name: "Colin" },
@@ -606,10 +648,49 @@ describe("test/JCalculator.test.js", function () {
             { number: 3, name: "Mr Chen" }
         ]
         var data = jc.unique(tb);
-        data.should.eql([
+        [
             { number: 1, name: "Colin" },
             { number: 2, name: "Colin" },
             { number: 3, name: "Mr Chen" }
-        ]);
+        ].should.eql(data);
+    });
+
+    it("test sum array type", function () {
+        var tb = [1, 2, 3]
+        var data = jc.sum(tb);
+        data.should.eql(6);
+    });
+
+    it("test sum array-obj type, key strng type", function () {
+        var data = jc.sum(table,"fly");
+        data.should.eql(14);
+    });
+
+    it("test sum array-obj type, key array type", function () {
+        var data = jc.sum(table, ["fly","inPerson"]);
+        data.should.eql({
+            fly: 14,
+            inPerson: 5103
+        });
+    });
+
+    it("test sum obj type and  !key", function () {
+        var tb = {
+            a: 1,
+            b: 2,
+            c: 3
+        }
+        var data = jc.sum(tb);
+        data.should.eql(6);
+    });
+
+    it("test sum obj type and key", function () {
+        var tb = {
+            a: 1,
+            b: 2,
+            c: 3
+        }
+        var data = jc.sum(tb, ["a", "b"]);
+        data.should.eql(3);
     });
 });

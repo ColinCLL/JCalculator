@@ -149,10 +149,10 @@
         } else if (jc.isArray(key) && jc.isObject(row)) {
           jc.map(key, function (k) {
             if (!sum[k]) sum[k] = 0;
-            sum[k] += row[k];
+            sum[k] += row[k] || 0;
           })
         } else if (jc.isString(key)) {
-          sum += row[key];
+          sum += row[key] || 0;
         }
       });
     }
@@ -162,10 +162,10 @@
       jc.forIn(data, function (k, row, i) {
         if (!!key) {
           jc.map(key, function (k1, j) {
-            if (k == k1) sum += row[k];
+            if (k == k1) sum += row || 0;
           })
         } else {
-          sum += row[k];
+          sum += row || 0;
         }
       });
     }
