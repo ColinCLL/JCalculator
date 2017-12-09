@@ -247,6 +247,29 @@
   var obj = [{test:113,text:"332"},{test:113 ,text:"332"},{test:1134, text:"332"},{test:1134,text:"332"}];
   var aaa = jc.unique(obj);
   console.log(aaa);
+
+
+
+  var time = [
+    { TIME: 1, INBYTE: 10, OUTBYTE: 10 },
+    { TIME: 2, INBYTE: 20, OUTBYTE: 20 },
+    { TIME: 3, INBYTE: 30, OUTBYTE: 30 },
+    { TIME:7, INBYTE:20, OUTBYTE:40 },
+    { TIME:8, INBYTE:30, OUTBYTE:50 },
+    { TIME:11, INBYTE:40, OUTBYTE:60 }
+    ];
+
+
+
+    var set = {
+      key: "TIME",
+      start: 0,
+      end: 12,
+      space: 1,
+      zeroFill: ["INBYTE", "OUTBYTE"]
+    }
+    var fix = jc.spaceFix(time, set);
+    console.log(fix);
 	</script>
 </body>
 </html>

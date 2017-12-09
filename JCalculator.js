@@ -113,6 +113,61 @@
     return newArr;
   }
 
+
+  jc.spaceFix = function (data, set) {
+    // var thisWeek=[],lastWeek=[];
+    var fix = [];
+    //timeFlow.push(thisWeek[0]);
+    //补起点
+    console.log(data[0][set.key])
+    if (data[0][set.key] - set.start > 0) {
+      var obj = {};
+      obj[set.key] = set.start;
+      jc.map(set.zeroFill, function (d) {
+        obj[d] = 0;
+      })
+      data.unshift(obj);
+    }
+    //补结束点
+    if (data[data.length - 1][set.key] < set.end) {
+      var obj = {};
+      obj[set.key] = set.end;
+      jc.map(set.zeroFill, function (d) {
+        console.log(d);
+        obj[d] = 0;
+      });
+      data.push(obj);
+    }
+    for (var i = 1, j = 0, len = data.length; i < len; i++) {
+      if (i > 10000) break;
+      var space = data[i].TIME - data[i - 1].TIME;
+      // 补零
+      if (space <= set.space) {
+        fix.push(data[i])
+      } else {
+        var t = set.space;
+        for (var k = 0, l = space / set.space; k < l; k++) {
+          console.log(l, k);
+          if (k > 10000) break;
+          var obj = {};
+          obj[set.key] = parseInt(data[i - 1].TIME) + parseInt(t);
+          jc.map(set.zeroFill, function (d) {
+            obj[d] = 0;
+          });
+          fix.push(obj);
+          t += set.space;
+        }
+      }
+    }
+    // _.map(fix,function(d){
+    // 	d.TIME>startTimeStamp-604800?thisWeek.push(d):lastWeek.push(d);
+    // })
+    // var nextList=forecast(thisWeek,lastWeek);
+    fix.unshift(data[0]);
+    data = fix;
+    return data;
+  }
+
   /**
   * keyArray
   * json根据键名生成数组，并存于一个对象内
