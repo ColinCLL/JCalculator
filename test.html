@@ -247,6 +247,34 @@
   var obj = [{test:113,text:"332"},{test:113 ,text:"332"},{test:1134, text:"332"},{test:1134,text:"332"}];
   var aaa = jc.unique(obj);
   console.log(aaa);
+
+
+
+  var time = [
+  { OTHER: 1, IN: 10, OUT: 10 },
+  { OTHER: 2, IN: 20, OUT: 20 },
+  { OTHER: 3, IN: 30, OUT: 30 },
+  { OTHER:7, IN:20, OUT:40 },
+  { OTHER:8, IN:30, OUT:50 },
+  { OTHER:11, IN:40, OUT:60 }
+  ];
+  var set = {
+    key: "OTHER",
+    start: 0, 
+    end: 12,
+    space: 1,
+    zeroFill: ["IN", "OUT"]
+  }
+  var fix = jc.spaceFix(time, set);
+  console.log(fix);
+
+  var keybreak = jc.keybreak(time, {
+    break: ["IN", "OUT"],
+    key: "type",
+    value: "value",
+    retain:["OTHER"]
+  })
+  
 	</script>
 </body>
 </html>

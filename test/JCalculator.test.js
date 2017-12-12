@@ -671,6 +671,39 @@ describe("test/JCalculator.test.js", function () {
         ].should.eql(data);
     });
 
+    it("test spaceFix", function () {
+        var time = [
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 7, IN: 20, OUT: 40 },
+            { TIME: 8, IN: 30, OUT: 50 },
+            { TIME: 11, IN: 40, OUT: 60 }
+        ];
+        var fix = jc.spaceFix(time, {
+            key: "TIME",
+            start: 0,
+            end: 12,
+            space: 1,
+            zeroFill: ["IN", "OUT"]
+        });
+        fix.should.eql([
+            { TIME: 0, IN: 0, OUT: 0 },
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 4, IN: 0, OUT: 0 },
+            { TIME: 5, IN: 0, OUT: 0 },
+            { TIME: 6, IN: 0, OUT: 0 },
+            { TIME: 7, IN: 20, OUT: 40 },
+            { TIME: 8, IN: 30, OUT: 50 },
+            { TIME: 9, IN: 0, OUT: 0 },
+            { TIME: 10, IN: 0, OUT: 0 },
+            { TIME: 11, IN: 40, OUT: 60 },
+            { TIME: 12, IN: 0, OUT: 0 }
+        ]);
+    });
+
     it("test sum array type", function () {
         var tb = [1, 2, 3]
         var data = jc.sum(tb);
