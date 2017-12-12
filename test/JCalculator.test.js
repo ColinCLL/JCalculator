@@ -587,6 +587,22 @@ describe("test/JCalculator.test.js", function () {
         data.should.eql(json);
     });
 
+    it("test limit array type", function () {
+        var data = jc.sql({
+            select: {
+                col: ["time", "inPerson"],
+            },
+            from: table,
+            limit: [12, 3]
+
+        });
+
+        var json = [
+            { time: "10月7日", inPerson: 900},
+            { time: "10月7日", inPerson: 1200}
+        ]
+        data.should.eql(json);
+    });
     it("test limit over", function () {
         var data = jc.sql({
             select: {
