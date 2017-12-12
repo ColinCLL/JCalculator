@@ -115,11 +115,8 @@
 
 
   jc.spaceFix = function (data, set) {
-    // var thisWeek=[],lastWeek=[];
     var fix = [];
-    //timeFlow.push(thisWeek[0]);
     //补起点
-    console.log(data[0][set.key])
     if (data[0][set.key] - set.start > 0) {
       var obj = {};
       obj[set.key] = set.start;
@@ -133,7 +130,6 @@
       var obj = {};
       obj[set.key] = set.end;
       jc.map(set.zeroFill, function (d) {
-        console.log(d);
         obj[d] = 0;
       });
       data.push(obj);
@@ -146,8 +142,7 @@
         fix.push(data[i])
       } else {
         var t = set.space;
-        for (var k = 0, l = space / set.space; k < l; k++) {
-          console.log(l, k);
+        for (var k = 0, l = space / set.space; k < (l - 1); k++) {
           if (k > 10000) break;
           var obj = {};
           obj[set.key] = parseInt(data[i - 1].TIME) + parseInt(t);
@@ -157,15 +152,11 @@
           fix.push(obj);
           t += set.space;
         }
+        fix.push(data[i]);
       }
     }
-    // _.map(fix,function(d){
-    // 	d.TIME>startTimeStamp-604800?thisWeek.push(d):lastWeek.push(d);
-    // })
-    // var nextList=forecast(thisWeek,lastWeek);
     fix.unshift(data[0]);
-    data = fix;
-    return data;
+    return fix;
   }
 
   /**

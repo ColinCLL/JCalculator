@@ -251,25 +251,30 @@
 
 
   var time = [
-    { TIME: 1, INBYTE: 10, OUTBYTE: 10 },
-    { TIME: 2, INBYTE: 20, OUTBYTE: 20 },
-    { TIME: 3, INBYTE: 30, OUTBYTE: 30 },
-    { TIME:7, INBYTE:20, OUTBYTE:40 },
-    { TIME:8, INBYTE:30, OUTBYTE:50 },
-    { TIME:11, INBYTE:40, OUTBYTE:60 }
-    ];
+  { OTHER: 1, IN: 10, OUT: 10 },
+  { OTHER: 2, IN: 20, OUT: 20 },
+  { OTHER: 3, IN: 30, OUT: 30 },
+  { OTHER:7, IN:20, OUT:40 },
+  { OTHER:8, IN:30, OUT:50 },
+  { OTHER:11, IN:40, OUT:60 }
+  ];
+  var set = {
+    key: "OTHER",
+    start: 0, 
+    end: 12,
+    space: 1,
+    zeroFill: ["IN", "OUT"]
+  }
+  var fix = jc.spaceFix(time, set);
+  console.log(fix);
 
-
-
-    var set = {
-      key: "TIME",
-      start: 0,
-      end: 12,
-      space: 1,
-      zeroFill: ["INBYTE", "OUTBYTE"]
-    }
-    var fix = jc.spaceFix(time, set);
-    console.log(fix);
+  var keybreak = jc.keybreak(time, {
+    break: ["IN", "OUT"],
+    key: "type",
+    value: "value",
+    retain:["OTHER"]
+  })
+  
 	</script>
 </body>
 </html>
