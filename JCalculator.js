@@ -179,6 +179,32 @@
   }
 
   /**
+  * keyBreak
+  * json根据键名生成数组，并存于一个对象内
+  *
+  * @public
+  * @param [obj, obj, ...] data 数据
+  * @param {} option拆分数据配置项
+  */
+  jc.keyBreak = function (data, option) {
+    var arr = [];
+    var key = option.key;
+    var value = option.value;
+    jc.map(data, function (d) {
+      jc.map(option.break, function (e) {
+        var obj = {};
+        obj[key] = e;
+        obj[value] = d[e];
+        jc.map(option.retain, function (f) {
+          obj[f] = d[f];
+        });
+        arr.push(obj);
+      });
+    })
+    return arr;
+  };
+
+  /**
   * 加法
   *
   * @public
