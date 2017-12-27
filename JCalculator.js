@@ -134,9 +134,10 @@
       });
       data.push(obj);
     }
+    
     for (var i = 1, j = 0, len = data.length; i < len; i++) {
       if (i > 10000) break;
-      var space = data[i].TIME - data[i - 1].TIME;
+      var space = data[i][set.key] - data[i - 1][set.key];
       // 补零
       if (space <= set.space) {
         fix.push(data[i])
@@ -145,7 +146,7 @@
         for (var k = 0, l = space / set.space; k < (l - 1); k++) {
           if (k > 10000) break;
           var obj = {};
-          obj[set.key] = parseInt(data[i - 1].TIME) + parseInt(t);
+          obj[set.key] = parseInt(data[i - 1][set.key]) + parseInt(t);
           jc.map(set.zeroFill, function (d) {
             obj[d] = 0;
           });
