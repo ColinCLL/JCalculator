@@ -88,11 +88,17 @@
   * @param {object} key 过滤条件
   */
   jc.where = function (data, key) {
-    return jc.filter(data, function (d) {
-      return nativeKeys(key).every(function (k) {
-        return key[k] === d[k];
-      })
-    });
+    var result;
+    if (jc.isFunction(key)) {
+      result = jc.filter(data, key)
+    } else if (jc.isObject(key)) {
+      result = jc.filter(data, function (d) {
+        return nativeKeys(key).every(function (k) {
+          return key[k] === d[k];
+        })
+      });
+    }
+    return result;
   }
 
   /**
@@ -102,7 +108,7 @@
   * @param {array} data 数据
   */
   jc.unique = function (data) {
-    if ( !data||data.length == 0) return data;
+    if ( !data || data.length == 0) return data;
     var newObj = {}, newArr=[];
     var arr = jc.map(data, function (d) {
       var item = JSON.stringify(d);
@@ -116,7 +122,7 @@
 
 
   jc.spaceFix = function (data, set) {
-    if ( !data||data.length == 0) return data;
+    if ( !data || data.length == 0) return data;
     var fix = [];
     //补起点
     if (data[0][set.key] - set.start > 0) {
@@ -171,7 +177,7 @@
   * @param [keyName, keyName, ...] keyList转数组的键名
   */
   jc.keyArray = function (data, keyList) {
-    if ( !data||data.length == 0) return data;
+    if ( !data || data.length == 0) return data;
     var objList = {}
     jc.map(data, function (d,i) {
       jc.map(keyList, function (e, j) {
@@ -191,7 +197,7 @@
   * @param {} option拆分数据配置项
   */
   jc.keyBreak = function (data, option) {
-    if ( !data||data.length == 0) return data;
+    if ( !data || data.length == 0) return data;
     var arr = [];
     var key = option.key;
     var value = option.value;
@@ -217,7 +223,7 @@
   * @param {object|array|string} key 相加的键配置
   */
   jc.sum = function (data, key) {
-    if ( !data||data.length == 0) return data;
+    if ( !data || data.length == 0) return data;
     var sum, length = 0, count = 0;
     if (jc.isArray(data)) {
       sum = !key || jc.isString(key) ? 0 : {},
@@ -284,6 +290,7 @@
 
   jc.sql = function (query) {
     errorCheck(query);
+    if (query.from.length == 0 || !jc.isArray(query.from)) return [];
     var table = query.from;
     var whereData, groupData, havingData, selectData, orderData,limitData;
     whereData = sqlWhere(table, query.where);
@@ -341,8 +348,7 @@
 
   function sqlWhere (table, where) {
     if (!where) return table;
-    if (jc.isFunction(where)) return jc.filter(table, where);
-    if (jc.isObject(where)) return jc.where(table, where);
+    return jc.where(table, where);
   }
 
   function sqlGroup (table, query) {
