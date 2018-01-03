@@ -701,7 +701,17 @@ describe("test/JCalculator.test.js", function () {
             { TIME: 12, IN: 0, OUT: 0 }
         ]);
     });
-
+    it("test spaceFix, empty", function () {
+        var time = [];
+        var fix = jc.spaceFix(time, {
+            key: "TIME",
+            start: 0,
+            end: 12,
+            space: 1,
+            zeroFill: ["IN", "OUT"]
+        });
+        fix.should.containDeepOrdered([]);
+    });
     it("test sum array type", function () {
         var tb = [1, 2, 3]
         var data = jc.sum(tb);
