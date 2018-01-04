@@ -101,6 +101,29 @@
     return result;
   }
 
+
+  /**
+  * limit
+  *
+  * @public
+  * @param {array} val 数据
+  * @param {object} option 检索条件
+  */
+  jc.limit = function (data, option) {
+    return sqlLimit(data, option);
+  }
+
+  /**
+  * orderBy
+  *
+  * @public
+  * @param {array} val 数据
+  * @param {object} option 排序条件
+  */
+  jc.orderBy = function (data, option) {
+    return sqlOrder(data, option);
+  }
+
   /**
   * 去重
   *
@@ -376,35 +399,37 @@
     jc.forIn(having, function (key, val) {
       var reg=/[1-9a-zA-z_\$\@]+/g;
       var splitKey = key.split("_");
-      var type = splitKey.shift(); // 首个为聚合运算类型
-      var formula = splitKey.join("_"); //
+      var type = splitKey.shift(); // 首个_前面部分为聚合运算类型
+      var formula = splitKey.join("_"); 
+      // 根据运算符号拆分出字段，在前后加上对应内容变成row["key"]这样的字符串
       formula = formula.replace(reg, function (match) {
         return "row['" + match + "']";
       }); 
+
       switch (type) {
       case "sum":
         sumObj[key] = function (row) {
-          return eval(formula)
+          return (new Function("row", "return " + formula))(row);
         };
         break;
       case "avg":
         avgObj[key] = function (row) {
-          return eval(formula)
+          return (new Function("row", "return " + formula))(row);
         };
         break;
       case "max":
         maxObj[key] = function (row) {
-          return eval(formula)
+          return (new Function("row", "return " + formula))(row);
         };
         break;
       case "min":
         minObj[key] = function (row) {
-          return eval(formula)
+          return (new Function("row", "return " + formula))(row);
         };
         break;
       case "count":
         countObj[key] = function (row) {
-          return eval(formula)
+          return (new Function("row", "return " + formula))(row);
         };
         break;
       }
@@ -413,7 +438,8 @@
       var row = groupCal(groupItem, null, sumObj, avgObj, maxObj, minObj, countObj);
       var flag;
       for (var key in having) {
-        flag = eval(row[key] + having[key]);
+        foo = new Function("return " + row[key] + having[key]);
+        flag = foo();
         if (!flag) break;
       }
       if (flag) havingData[groupKey] = groupItem;

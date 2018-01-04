@@ -32,7 +32,7 @@ describe("test/JCalculator.test.js", function () {
             },
             from: table
         });
-        data.should.containDeepOrdered([{ "fly": 3,"all": 14, in: 14 }]);
+        data.should.deepEqual([{ "fly": 3,"all": 14, in: 14 }]);
     });
 
     it("test count array type", function () {
@@ -42,7 +42,7 @@ describe("test/JCalculator.test.js", function () {
             },
             from: table
         });
-    data.should.containDeepOrdered([{ "count_fly": 3, "count_*": 14, "count_time": 14 }]);
+    data.should.deepEqual([{ "count_fly": 3, "count_*": 14, "count_time": 14 }]);
     });
 
     it("test sum obj type", function () {
@@ -61,7 +61,7 @@ describe("test/JCalculator.test.js", function () {
         for (var i=0, len=table.length; i<len; i++) {
             inSum += table[i].inPerson || 0;
         }
-        data.should.containDeepOrdered([{ "fly": 14, in: inSum }]);
+        data.should.deepEqual([{ "fly": 14, in: inSum }]);
     });
 
     it("test sum array type", function () {
@@ -75,7 +75,7 @@ describe("test/JCalculator.test.js", function () {
         for (var i = 0, len = table.length; i < len; i++) {
             inSum += table[i].inPerson || 0;
         }
-        data.should.containDeepOrdered([{ "sum_fly": 14, "sum_inPerson": inSum }]);
+        data.should.deepEqual([{ "sum_fly": 14, "sum_inPerson": inSum }]);
     });
 
 
@@ -95,7 +95,7 @@ describe("test/JCalculator.test.js", function () {
         for (var i = 0, len = table.length; i < len; i++) {
             inSum += table[i].inPerson || 0;
         }
-        data.should.containDeepOrdered([{ "fly": 14/3, in: inSum / table.length }]);
+        data.should.deepEqual([{ "fly": 14/3, in: inSum / table.length }]);
     });
 
     it("test avg array type", function () {
@@ -109,7 +109,7 @@ describe("test/JCalculator.test.js", function () {
         for (var i = 0, len = table.length; i < len; i++) {
             inSum += table[i].inPerson || 0;
         }
-        data.should.containDeepOrdered([{ "avg_fly": 14/3, "avg_inPerson": inSum / table.length }]);
+        data.should.deepEqual([{ "avg_fly": 14/3, "avg_inPerson": inSum / table.length }]);
     });
 
     it("test max obj type", function () {
@@ -124,7 +124,7 @@ describe("test/JCalculator.test.js", function () {
             },
             from: table
         });
-        data.should.containDeepOrdered([{ "fly": 12, in: 1200 }]);
+        data.should.deepEqual([{ "fly": 12, in: 1200 }]);
     });
 
     it("test max array type", function () {
@@ -134,7 +134,7 @@ describe("test/JCalculator.test.js", function () {
             },
             from: table
         });
-        data.should.containDeepOrdered([{ "max_fly": 12, "max_inPerson": 1200 }]);
+        data.should.deepEqual([{ "max_fly": 12, "max_inPerson": 1200 }]);
     });
 
     it("test min obj type", function () {
@@ -149,7 +149,7 @@ describe("test/JCalculator.test.js", function () {
             },
             from: table
         });
-        data.should.containDeepOrdered([{ "fly": 0, in: 13 }]);
+        data.should.deepEqual([{ "fly": 0, in: 13 }]);
     });
 
     it("test min array type", function () {
@@ -159,7 +159,7 @@ describe("test/JCalculator.test.js", function () {
             },
             from: table
         });
-        data.should.containDeepOrdered([{ "min_fly": 0, "min_inPerson": 13 }]);
+        data.should.deepEqual([{ "min_fly": 0, "min_inPerson": 13 }]);
     });
 
     it("test col obj type", function () {
@@ -191,7 +191,7 @@ describe("test/JCalculator.test.js", function () {
         { region: "广州", fly: undefined},
         { region: "深圳", fly: undefined}
     ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test col array type", function () {
@@ -218,7 +218,7 @@ describe("test/JCalculator.test.js", function () {
             { region: "广州", fly: undefined },
             { region: "深圳", fly: undefined }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test select string type and group string", function () {
@@ -244,7 +244,7 @@ describe("test/JCalculator.test.js", function () {
             { time: "10月6日", sum_inPerson: 1900, avg_outPerson: 15, count_fly: 0, max_fly: undefined, min_fly: undefined},
             { time: "10月7日", sum_inPerson: 2100, avg_outPerson: 8.5, count_fly: 0, max_fly: undefined, min_fly: undefined}
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test group function string", function () {
@@ -266,7 +266,7 @@ describe("test/JCalculator.test.js", function () {
             { sum_inPerson: 1900 },
             { sum_inPerson: 2100 }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test group array include string", function () {
@@ -287,7 +287,7 @@ describe("test/JCalculator.test.js", function () {
             { time: '10月6日', sum_inPerson: 1900 },
             { time: '10月7日', sum_inPerson: 2100 }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
 
@@ -310,7 +310,7 @@ describe("test/JCalculator.test.js", function () {
             { sum_inPerson: 1900 },
             { sum_inPerson: 2100 }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
     it("test where obj type", function () {
         var data = jc.sql({
@@ -325,7 +325,7 @@ describe("test/JCalculator.test.js", function () {
             { time: "10月1日", inPerson: 20},
             { time: "10月1日", inPerson: 13}
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test where function type", function () {
@@ -342,7 +342,7 @@ describe("test/JCalculator.test.js", function () {
         var json = [
             { time: "10月1日", inPerson: 13 }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test having sum", function () {
@@ -363,7 +363,7 @@ describe("test/JCalculator.test.js", function () {
             { time: "10月6日", in: 1900 },
             { time: "10月7日", in: 2100 }
         ];
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test having count", function () {
@@ -381,7 +381,7 @@ describe("test/JCalculator.test.js", function () {
         var json = [
             { time: "10月1日", in: 33 }
         ];
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test having max", function () {
@@ -399,7 +399,7 @@ describe("test/JCalculator.test.js", function () {
         var json = [
             { time: "10月1日", in: 33 }
         ];
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test having min", function () {
@@ -417,7 +417,7 @@ describe("test/JCalculator.test.js", function () {
         var json = [
             { time: "10月1日", in: 33 }
         ];
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test having avg", function () {
@@ -435,7 +435,7 @@ describe("test/JCalculator.test.js", function () {
         var json = [
             { time: "10月1日", in: 33 }
         ];
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test orderBy ASC", function () {
@@ -463,7 +463,7 @@ describe("test/JCalculator.test.js", function () {
             { inPerson: 1000 },
             { inPerson: 1200 }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     
@@ -492,7 +492,7 @@ describe("test/JCalculator.test.js", function () {
             { inPerson: 15 },
             { inPerson: 13 }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test orderBy function type", function () {
@@ -522,7 +522,7 @@ describe("test/JCalculator.test.js", function () {
             { inPerson: 15 },
             { inPerson: 13 }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
     
     it("test limit number type", function () {
@@ -539,7 +539,7 @@ describe("test/JCalculator.test.js", function () {
             { time: "10月1日", inPerson: 20 },
             { time: "10月1日", inPerson: 13 }
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test limit number > table.length type", function () {
@@ -550,7 +550,7 @@ describe("test/JCalculator.test.js", function () {
             from: table,
             limit: 20
         });
-        data.length.should.containDeepOrdered(14);
+        data.length.should.deepEqual(14);
     });
 
     it("test limit array type", function () {
@@ -567,7 +567,7 @@ describe("test/JCalculator.test.js", function () {
             { time: "10月1日", inPerson: 13},
             { time: "10月2日", inPerson: 15}
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
 
     it("test limit array type, data.length between limit[0] and limit[1]", function () {
@@ -584,7 +584,7 @@ describe("test/JCalculator.test.js", function () {
             { time: "10月7日", inPerson: 900},
             { time: "10月7日", inPerson: 1200}
         ]
-        data.should.containDeepOrdered(json);
+        data.should.deepEqual(json);
     });
     it("test limit over", function () {
         var data = jc.sql({
@@ -595,7 +595,7 @@ describe("test/JCalculator.test.js", function () {
             limit: [15,20]
 
         });
-        data.should.containDeepOrdered([]);
+        data.should.deepEqual([]);
     });
 
     it("test miss from", function () {
@@ -632,7 +632,7 @@ describe("test/JCalculator.test.js", function () {
 
     it("test keyArray", function () {
         var data = jc.keyArray(table, ["time", "region"]);
-        data.should.containDeepOrdered({
+        data.should.deepEqual({
             time: ["10月1日", "10月1日", "10月2日", "10月2日", "10月3日", "10月3日", "10月4日", "10月4日", "10月5日", "10月5日", "10月6日", "10月6日", "10月7日", "10月7日"],
             region: ["广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳"]
         });
@@ -647,7 +647,7 @@ describe("test/JCalculator.test.js", function () {
             value: "value",
             retain: ["time"]
         });
-        data.should.containDeepOrdered([
+        data.should.deepEqual([
             { time: "10/1", key: "mac", value: 10 },
             { time: "10/1", key: "win", value: 20 }
         ]);
@@ -666,7 +666,7 @@ describe("test/JCalculator.test.js", function () {
             { number: 1, name: "Colin" },
             { number: 2, name: "Colin" },
             { number: 3, name: "Mr Chen" }
-        ].should.containDeepOrdered(data);
+        ].should.deepEqual(data);
     });
 
     it("test spaceFix", function () {
@@ -685,7 +685,7 @@ describe("test/JCalculator.test.js", function () {
             space: 1,
             zeroFill: ["IN", "OUT"]
         });
-        fix.should.containDeepOrdered([
+        fix.should.deepEqual([
             { TIME: 0, IN: 0, OUT: 0 },
             { TIME: 1, IN: 10, OUT: 10 },
             { TIME: 2, IN: 20, OUT: 20 },
@@ -701,7 +701,38 @@ describe("test/JCalculator.test.js", function () {
             { TIME: 12, IN: 0, OUT: 0 }
         ]);
     });
-    it("test spaceFix, empty", function () {
+
+    it("test jc.orderBy", function () {
+        var table = [
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 3, IN: 30, OUT: 30 }
+        ];
+        var order = jc.orderBy(table, {IN:"DESC"});
+        order.should.deepEqual([
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 1, IN: 10, OUT: 10 }
+        ]);
+    });
+
+    it("test jc.limit", function () {
+        var time = [
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 7, IN: 20, OUT: 40 },
+            { TIME: 8, IN: 30, OUT: 50 },
+            { TIME: 11, IN: 40, OUT: 60 }
+        ];
+        var fix = jc.limit(time, 2);
+        fix.should.deepEqual([
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 }
+        ]);
+    });
+
+    it("test sapceFix, empty", function () {
         var time = [];
         var fix = jc.spaceFix(time, {
             key: "TIME",
@@ -710,22 +741,23 @@ describe("test/JCalculator.test.js", function () {
             space: 1,
             zeroFill: ["IN", "OUT"]
         });
-        fix.should.containDeepOrdered([]);
+        fix.should.deepEqual([]);
     });
+
     it("test sum array type", function () {
         var tb = [1, 2, 3]
         var data = jc.sum(tb);
-        data.should.eql(6);
+        data.should.deepEqual(6);
     });
 
     it("test sum array-obj type, key strng type", function () {
         var data = jc.sum(table,"fly");
-        data.should.eql(14);
+        data.should.deepEqual(14);
     });
 
     it("test sum array-obj type, key array type", function () {
         var data = jc.sum(table, ["fly","inPerson"]);
-        data.should.containDeepOrdered({
+        data.should.deepEqual({
             fly: 14,
             inPerson: 5103
         });
@@ -738,7 +770,7 @@ describe("test/JCalculator.test.js", function () {
             c: 3
         }
         var data = jc.sum(tb);
-        data.should.eql(6);
+        data.should.deepEqual(6);
     });
 
     it("test sum obj type and key", function () {
@@ -748,14 +780,14 @@ describe("test/JCalculator.test.js", function () {
             c: 3
         }
         var data = jc.sum(tb, ["a", "b"]);
-        data.should.eql(3);
+        data.should.deepEqual(3);
     });
 
     it("test group array type", function () {
         var group = jc.group(table, function(row) {
             return row.time
         })
-        group.should.containDeepOrdered({
+        group.should.deepEqual({
             "10月1日": [{ time: "10月1日", inPerson: 20, outPerson: 1000, region: "广州", fly: 12 },
                 { time: "10月1日", inPerson: 13, outPerson: 900, region: "深圳", fly: 2 }
             ],
