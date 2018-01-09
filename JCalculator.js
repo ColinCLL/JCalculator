@@ -1,5 +1,5 @@
 (function () {
-  // 多种环境支持，以及一些零碎开头引用了underscore的代码
+  // 多种环境支持，以及一些零碎开头引用了underscore的代码，致敬经典。
   var root = typeof self == 'object' && self.self === self && self ||
   typeof global == 'object' && global.global === global && global || this;
   // 保存jc
@@ -123,6 +123,61 @@
   jc.orderBy = function (data, option) {
     return sqlOrder(data, option);
   }
+
+  /**
+  * extend
+  * 此段偷懒，大部分引用了jquery的extend，用法和jq一致;
+  *
+  * @public
+  * @param boolean   可选，true为深拷贝，默认浅拷贝
+  * @param {object|array} 被覆盖的对象
+  * @param {object|array} 需要复制的对象
+  * 
+  * @return {object|array} 被覆盖的对象
+  */
+  jc.extend  = function () { 
+    var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {},
+      i = 1,
+      length = arguments.length,
+      deep = false;
+    if (typeof target === "boolean") {
+      deep = target;
+      target = arguments[1] || {};
+      i++;
+    }
+
+    if (typeof target !== "object" && !jc.isFunction(target)) {
+      target = {};
+    }
+
+    if (length === i) {
+      target = this; --i;
+    }
+    for (; i < length; i++) {
+      if ((options = arguments[i]) != null) {
+        for (name in options) {
+          src = target[name];
+          copy = options[name];
+          if (target === copy) {
+            continue;
+          }
+          if (deep && copy && (jc.isObject(copy) || (copyIsArray = jc.isArray(copy)))) {
+            if (copyIsArray) {
+              copyIsArray = false;
+              clone = src && jc.isArray(src) ? src : []; 
+            } else {
+              clone = src && jc.isObject(src) ? src : {};
+            }
+            // 递归
+            target[name] = jc.extend(deep, clone, copy);
+          } else if (copy !== undefined) {
+            target[name] = copy; 
+          }
+        }
+      }
+    }
+    return target;
+  };
 
   /**
   * 去重
@@ -682,7 +737,7 @@
 
   jc.isObject = function (val) {
     var type = typeof val;
-    return type === 'function' || type === 'object' && !!val;
+    return type === 'object' && !jc.isArray(val) && !!val;
   };
 
   jc.map(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Symbol', 'Map', 'WeakMap', 'Set', 'WeakSet'], function (name) {
