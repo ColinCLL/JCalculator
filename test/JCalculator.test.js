@@ -638,6 +638,16 @@ describe("test/JCalculator.test.js", function () {
         });
     });
 
+    it("test isNoVal", function () {
+        
+        [jc.isNoVal(null), jc.isNoVal(undefined), jc.isNoVal(NaN), jc.isNoVal(0), jc.isNoVal({})].should.deepEqual([
+            true,
+            true,
+            false,
+            false,
+            false
+        ]);
+    });
 
     it("test keyBreak", function () {
         var tb = [{ time: "10/1", mac: 10, win: 20 }]

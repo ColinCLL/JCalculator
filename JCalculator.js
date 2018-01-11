@@ -293,6 +293,28 @@
     return arr;
   };
 
+/**
+* compare
+* 比较数字大小
+*
+* @private
+* @param num1  数据
+* @param num2  数据
+* @param type  取值类型
+*/
+  function compare (num1, num2, type) {
+    var result;
+    if (isNaN(num1) || isNaN(num2)) {
+      // 存在空值情况下(undefined和null)
+      result = isNaN(num1) ? num2 : num1
+    } else {
+      type = type == "max" ? (num1 > num2) : (num1 < num2)
+      result = type ? num1 : num2
+    }
+    return result
+  };
+
+
   /**
   * 加法
   *
@@ -608,24 +630,14 @@
       if (!jc.isObjEmpty(maxObj)) {
         jc.forIn(maxObj, function (key, val) {
           var rowVal = jc.isFunction(val) ? val(row) : row[val];
-          // 无空值情况下undefined和null，新的值(rowVal)比最大值(newRow[key])大，替换
-          if (jc.isNoVal(newRow[key]) || jc.isNoVal(rowVal)) {
-            newRow[key] = jc.isNoVal(newRow[key]) ? rowVal : newRow[key]
-          } else {
-            newRow[key] = rowVal > newRow[key] ? rowVal : newRow[key]
-          }
+          newRow[key] = compare(newRow[key], rowVal, "max");
         })
       }
 
       if (!jc.isObjEmpty(minObj)) {
         jc.forIn(minObj, function (key, val) {
-          var rowVal = jc.isFunction(val) ? val(row) : row[val];
-          // 无空值情况下undefined和null，新的值(rowVal)比最小值(newRow[key])小，替换
-          if (jc.isNoVal(newRow[key]) || jc.isNoVal(rowVal)) {
-            newRow[key] = jc.isNoVal(newRow[key]) ? rowVal : newRow[key]
-          } else {
-            newRow[key] = rowVal < newRow[key] ? rowVal : newRow[key]
-          }
+          var rowVal = jc.isFunction(val) ? val(row) : row[val];WW
+          newRow[key] = compare(newRow[key], rowVal, "min");
         })
       }
 
@@ -725,7 +737,7 @@
     return true;
   };
 
-  // 值是undefined或者null
+  // 值是undefined或者null, NaN会返回true, NaN独立用isNaN判断
   jc.isNoVal = function (val) {
     return jc.isUndefined(val) || val == null
   };
