@@ -643,11 +643,29 @@ describe("test/JCalculator.test.js", function () {
         [jc.isNoVal(null), jc.isNoVal(undefined), jc.isNoVal(NaN), jc.isNoVal(0), jc.isNoVal({})].should.deepEqual([
             true,
             true,
-            false,
+            true,
             false,
             false
         ]);
     });
+
+    // it("test jc.max, arr", function () {
+    //     var table = [5, NaN, undefined, null, 1]
+    //     var data = jc.max(table);
+    //     data.should.deepEqual(5);
+    // });
+
+    // it("test jc.max, arr-obj", function () {
+    //     var table = [
+    //         { time: "10/1", mac: 10, win: 20 },
+    //         { time: "10/1", mac: 30, win: 20 },
+    //         { time: "10/1", mac: 45, win: 20 }
+    //     ]
+    //     var data = jc.max(table, function (row) {
+    //         row.mac
+    //     });
+    //     [data].should.deepEqual([{ time: "10/1", mac: 45, win: 20 }]);
+    // });
 
     it("test keyBreak", function () {
         var tb = [{ time: "10/1", mac: 10, win: 20 }]
@@ -754,44 +772,44 @@ describe("test/JCalculator.test.js", function () {
         fix.should.deepEqual([]);
     });
 
-    it("test sum array type", function () {
-        var tb = [1, 2, 3]
-        var data = jc.sum(tb);
-        data.should.deepEqual(6);
-    });
+    // it("test sum array type", function () {
+    //     var tb = [1, 2, 3]
+    //     var data = jc.sum(tb);
+    //     data.should.deepEqual(6);
+    // });
 
-    it("test sum array-obj type, key strng type", function () {
-        var data = jc.sum(table,"fly");
-        data.should.deepEqual(14);
-    });
+    // it("test sum array-obj type, key strng type", function () {
+    //     var data = jc.sum(table,"fly");
+    //     data.should.deepEqual(14);
+    // });
 
-    it("test sum array-obj type, key array type", function () {
-        var data = jc.sum(table, ["fly","inPerson"]);
-        data.should.deepEqual({
-            fly: 14,
-            inPerson: 5103
-        });
-    });
+    // it("test sum array-obj type, key array type", function () {
+    //     var data = jc.sum(table, ["fly","inPerson"]);
+    //     data.should.deepEqual({
+    //         fly: 14,
+    //         inPerson: 5103
+    //     });
+    // });
 
-    it("test sum obj type and  !key", function () {
-        var tb = {
-            a: 1,
-            b: 2,
-            c: 3
-        }
-        var data = jc.sum(tb);
-        data.should.deepEqual(6);
-    });
+    // it("test sum obj type and  !key", function () {
+    //     var tb = {
+    //         a: 1,
+    //         b: 2,
+    //         c: 3
+    //     }
+    //     var data = jc.sum(tb);
+    //     data.should.deepEqual(6);
+    // });
 
-    it("test sum obj type and key", function () {
-        var tb = {
-            a: 1,
-            b: 2,
-            c: 3
-        }
-        var data = jc.sum(tb, ["a", "b"]);
-        data.should.deepEqual(3);
-    });
+    // it("test sum obj type and key", function () {
+    //     var tb = {
+    //         a: 1,
+    //         b: 2,
+    //         c: 3
+    //     }
+    //     var data = jc.sum(tb, ["a", "b"]);
+    //     data.should.deepEqual(3);
+    // });
 
     it("test group array type", function () {
         var group = jc.group(table, function(row) {

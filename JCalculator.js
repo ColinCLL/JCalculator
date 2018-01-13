@@ -315,46 +315,65 @@
   };
 
 
+
+
   /**
   * 加法
-  *
+  * 以完成但不开放，因为不是内置SQL方法里面的，感觉没必要开放一个重复功能的东西。
+  * 输入输出自由度和灵活度都比SQL函数的高，但同时也造成使用方式不一致，容易造成用户困扰，这也是搁置主要原因之一。
+  * 初心：若只需要sum这类型聚合，写成SQl形式未免有些麻烦，现应该斟酌对比reduce和SQL的sum再封装的语法糖那种更好。
   * @public
   * @param {array} data 数据
   * @param {object|array|string} key 相加的键配置
   */
-  jc.sum = function (data, key) {
-    if ( !data || data.length == 0) return data;
-    var sum, length = 0, count = 0;
-    if (jc.isArray(data)) {
-      sum = !key || jc.isString(key) ? 0 : {},
-      jc.map(data, function (row) {
-        if (!key && (jc.isNumber(row))) {
-          sum += row || 0;
-        } else if (jc.isArray(key) && jc.isObject(row)) {
-          jc.map(key, function (k) {
-            if (!sum[k]) sum[k] = 0;
-            sum[k] += row[k] || 0;
-          })
-        } else if (jc.isString(key)) {
-          sum += row[key] || 0;
-        }
-      });
-    }
+  // jc.sum = function (data, key) {
+  //   if ( !data || data.length == 0) return data;
+  //   var sum, length = 0, count = 0;
+  //   if (jc.isArray(data)) {
+  //     sum = !key || jc.isString(key) ? 0 : {},
+  //     jc.map(data, function (row) {
+  //       if (!key && (jc.isNumber(row))) {
+  //         sum += row || 0;
+  //       } else if (jc.isArray(key) && jc.isObject(row)) {
+  //         jc.map(key, function (k) {
+  //           if (!sum[k]) sum[k] = 0;
+  //           sum[k] += row[k] || 0;
+  //         })
+  //       } else if (jc.isString(key)) {
+  //         sum += row[key] || 0;
+  //       }
+  //     });
+  //   }
 
-    if (!jc.isArray(data) && jc.isObject(data)) {
-      sum = 0;
-      jc.forIn(data, function (k, row, i) {
-        if (!!key) {
-          jc.map(key, function (k1, j) {
-            if (k == k1) sum += row || 0;
-          })
-        } else {
-          sum += row || 0;
-        }
-      });
-    }
-    return sum;
-  }
+  //   if (!jc.isArray(data) && jc.isObject(data)) {
+  //     sum = 0;
+  //     jc.forIn(data, function (k, row, i) {
+  //       if (!!key) {
+  //         jc.map(key, function (k1, j) {
+  //           if (k == k1) sum += row || 0;
+  //         })
+  //       } else {
+  //         sum += row || 0;
+  //       }
+  //     });
+  //   }
+  //   return sum;
+  // }
+
+  /**
+  * max
+  * 暂时搁置，因为不是内置SQL方法里面的，感觉没必要写一个重复功能的东西
+  */
+  // jc.max = function (data, fn) {
+  //   if (!data || data.length == 0) return data;
+  //   var max;
+  //   jc.map(data, function (row) {
+  //     var num1 = max && fn ? fn(max) : row
+  //     var num2 = fn ? fn(row) : row
+  //     max = num1 > num2 ? max : row;
+  //   });
+  //   return max
+  // };
 
   /**
   * 分组
@@ -364,7 +383,7 @@
   * @param {object|array|string} key 分组条件
   */
   jc.group = jc.groupBy = function (val, key) {
-    if ( !val||val.length == 0) return val;
+    if ( !val || val.length == 0) return val;
     var groups = {};
     jc.map(val, function (row, i) {
       var k = [];
@@ -636,7 +655,7 @@
 
       if (!jc.isObjEmpty(minObj)) {
         jc.forIn(minObj, function (key, val) {
-          var rowVal = jc.isFunction(val) ? val(row) : row[val];WW
+          var rowVal = jc.isFunction(val) ? val(row) : row[val];
           newRow[key] = compare(newRow[key], rowVal, "min");
         })
       }
@@ -668,11 +687,11 @@
 
 
   /**
-    * 排序
-    *
-    * @private
-    * @param {array} table 数据
-    * @param {object|function} order 排序配置
+  * 排序
+  *
+  * @private
+  * @param {array} table 数据
+  * @param {object|function} order 排序配置
   ***/
   function sqlOrder (table, order) {
     if (!order) return table;
@@ -737,9 +756,9 @@
     return true;
   };
 
-  // 值是undefined或者null, NaN会返回true, NaN独立用isNaN判断
+  // 值是undefined, NaN或者null
   jc.isNoVal = function (val) {
-    return jc.isUndefined(val) || val == null
+    return jc.isUndefined(val) || val == null || val != val
   };
 
   // 类型判断, 偷懒引用了underscore的代码.
