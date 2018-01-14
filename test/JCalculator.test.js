@@ -649,23 +649,108 @@ describe("test/JCalculator.test.js", function () {
         ]);
     });
 
-    // it("test jc.max, arr", function () {
-    //     var table = [5, NaN, undefined, null, 1]
-    //     var data = jc.max(table);
-    //     data.should.deepEqual(5);
-    // });
+    it("test jc.max, arr", function () {
+        var table = [5, NaN, undefined, null, 1]
+        var data = jc.max(table);
+        data.should.deepEqual(5);
+    });
 
-    // it("test jc.max, arr-obj", function () {
-    //     var table = [
-    //         { time: "10/1", mac: 10, win: 20 },
-    //         { time: "10/1", mac: 30, win: 20 },
-    //         { time: "10/1", mac: 45, win: 20 }
-    //     ]
-    //     var data = jc.max(table, function (row) {
-    //         row.mac
-    //     });
-    //     [data].should.deepEqual([{ time: "10/1", mac: 45, win: 20 }]);
-    // });
+
+    it("test jc.max, arr-obj", function () {
+        var table = [
+            { time: "10/1", mac: 10, win: 20 },
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/1", mac: 45, win: 20 },
+            { time: "10/1", mac: 20, win: 20 }
+        ]
+        var data = jc.max(table, function (row) {
+            return row.mac
+        });
+        [data].should.deepEqual([{ time: "10/1", mac: 45, win: 20 }]);
+    });
+
+    it("test jc.min, arr", function () {
+        var table = [5, NaN, undefined, null, 1]
+        var result = jc.min(table);
+        console.log(result)
+        result.should.deepEqual(1);
+    });
+
+    it("test jc.min, arr-obj", function () {
+        var table = [
+            { time: "10/1", mac: 10, win: 20 },
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/1", mac: 45, win: 20 }
+        ]
+        var data = jc.min(table, function (row) {
+            return row.mac
+        });
+        [data].should.deepEqual([{ time: "10/1", mac: 10, win: 20 }]);
+    });
+
+    it("test jc.extend,deep", function () {
+        var obj = {
+            title: "for test",
+            array:["name",{
+                name: "extend"
+            }],
+            obj:{
+                name: "obj-test",
+                other:"other"
+            }
+        }
+        var data = jc.extend(true, obj, {
+            title: "success",
+            array: [123],
+            obj:{
+                name:"success"
+            }
+        });
+        data.should.deepEqual({
+            title: "success",
+            array: [123, {
+                name: "extend"
+            }],
+            obj: {
+                name: "success",
+                other: "other"
+            }
+        });
+    });
+
+    it("test jc.extend", function () {
+        var obj = {
+            title: "for test",
+            array: ["name", {
+                name: "extend"
+            }],
+            obj: {
+                name: "obj-test",
+                other: "other"
+            }
+        }
+        var data = jc.extend(obj, {
+            title: "success",
+            array: [123],
+            obj: {
+                name: "success"
+            },
+            fn: function (params) {
+                return params
+            }
+        });
+        data.should.deepEqual({
+            title: "success",
+            array: [123],
+            obj: {
+                name: "success"
+            },
+            fn: function (params) {
+                return params
+            }
+        });
+    });
+
 
     it("test keyBreak", function () {
         var tb = [{ time: "10/1", mac: 10, win: 20 }]
@@ -771,45 +856,6 @@ describe("test/JCalculator.test.js", function () {
         });
         fix.should.deepEqual([]);
     });
-
-    // it("test sum array type", function () {
-    //     var tb = [1, 2, 3]
-    //     var data = jc.sum(tb);
-    //     data.should.deepEqual(6);
-    // });
-
-    // it("test sum array-obj type, key strng type", function () {
-    //     var data = jc.sum(table,"fly");
-    //     data.should.deepEqual(14);
-    // });
-
-    // it("test sum array-obj type, key array type", function () {
-    //     var data = jc.sum(table, ["fly","inPerson"]);
-    //     data.should.deepEqual({
-    //         fly: 14,
-    //         inPerson: 5103
-    //     });
-    // });
-
-    // it("test sum obj type and  !key", function () {
-    //     var tb = {
-    //         a: 1,
-    //         b: 2,
-    //         c: 3
-    //     }
-    //     var data = jc.sum(tb);
-    //     data.should.deepEqual(6);
-    // });
-
-    // it("test sum obj type and key", function () {
-    //     var tb = {
-    //         a: 1,
-    //         b: 2,
-    //         c: 3
-    //     }
-    //     var data = jc.sum(tb, ["a", "b"]);
-    //     data.should.deepEqual(3);
-    // });
 
     it("test group array type", function () {
         var group = jc.group(table, function(row) {

@@ -304,9 +304,9 @@
 */
   function compare (num1, num2, type) {
     var result;
-    if (isNaN(num1) || isNaN(num2)) {
+    if (jc.isNoVal(num1) || jc.isNoVal(num2)) {
       // 存在空值情况下(undefined和null)
-      result = isNaN(num1) ? num2 : num1
+      result = jc.isNoVal(num1) ? num2 : num1
     } else {
       type = type == "max" ? (num1 > num2) : (num1 < num2)
       result = type ? num1 : num2
@@ -374,6 +374,60 @@
   //   });
   //   return max
   // };
+
+  /**
+  * 最大值
+  * 
+  * @param data 数据
+  * @param fn 处理逻辑，纯数字数组允许为空
+  */
+  jc.max = function (data, fn) {
+    if (!data || data.length == 0) return data;
+    var result;
+    // 兼容空值
+    fn = fn ? fn : function (row) {
+      return row
+    };
+    jc.map(data,function (row) {
+      // num1 num2 以防空值出现
+      var num1 = result ? fn(result) : result;
+      var num2 = row ? fn(row) : row;
+      if (jc.isNoVal(num1) || jc.isNoVal(num2)) {
+        // 存在空值情况下(undefined和null)
+        result = jc.isNoVal(num1) ? row : result
+      } else {
+        result = num1 > num2 ? result : row
+      }
+    })
+    return result
+  };
+
+/**
+* 最小值
+* 
+* @param data 数据
+* @param fn 处理逻辑，纯数字数组允许为空
+*/
+  jc.min = function (data, fn) {
+    if (!data || data.length == 0) return data;
+    var result;
+    // 兼容空值
+    fn = fn ? fn : function (row) {
+      return row
+    };
+    jc.map(data, function (row) {
+      // num1 num2 以防空值出现
+      var num1 = result ? fn(result) : result;
+      var num2 = row ? fn(row) : row;
+      if (jc.isNoVal(num1) || jc.isNoVal(num2)) {
+        // 存在空值情况下(undefined和null)
+        result = jc.isNoVal(num1) ? row : result
+      } else {
+        result = num1 < num2 ? result : row
+      }
+    })
+    return result
+  };
 
   /**
   * 分组
