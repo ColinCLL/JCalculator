@@ -41,12 +41,12 @@
   * 遍历
   *
   * @public
-  * @param {array|objec} val 数据
+  * @param {array} data 数据
   * @param {function} fn 循环每行执行函数
   */
-  jc.map = function (val, fn) {
-    if (jc.isArray(val)) return val.map(fn);
-    if (jc.isObject(val)) return nativeValues(val).map(fn)
+  jc.map = function (data, fn) {
+    if (jc.isArray(data)) return data.map(fn);
+    return [];
   };
 
   /**
@@ -57,10 +57,10 @@
   * @param {function} fn 循环每个键值对执行函数
   */
   jc.forIn = function (obj, fn) {
-    if (!jc.isObject(obj)) return obj;
+    if (!jc.isObject(obj)) return {};
     var i = 0
     for (var key in obj) {
-      fn(key, obj[key], obj, i)
+      fn(key, obj[key], i);
       i++;
     }
   }
@@ -69,14 +69,14 @@
   * 过滤
   *
   * @public
-  * @param {array} val 数据
-  * @param {function} fn 过滤函数
+  * @param {array} data 数据
+  * @param {function} iteratee 过滤函数
   */
-  jc.filter = function (val, fn) {
-    if (jc.isArray(val)) {
-      return val.filter(fn);
+  jc.filter = function (data, iteratee) {
+    if (jc.isArray(data)) {
+      return data.filter(iteratee);
     } else {
-      return val;
+      return [];
     }
   }
 
@@ -84,7 +84,7 @@
   * 过滤
   *
   * @public
-  * @param {array} val 数据
+  * @param {array} data 数据
   * @param {object} key 过滤条件
   */
   jc.where = function (data, key) {
@@ -97,6 +97,8 @@
           return key[k] === d[k];
         })
       });
+    } else {
+      return []
     }
     return result;
   }
@@ -117,11 +119,11 @@
   * orderBy
   *
   * @public
-  * @param {array} val 数据
-  * @param {object} option 排序条件
+  * @param array val 数据
+  * @param object||function iteratee 排序条件
   */
-  jc.orderBy = function (data, option) {
-    return sqlOrder(data, option);
+  jc.order = jc.orderBy = function (data, iteratee) {
+    return sqlOrder(data, iteratee);
   }
 
   /**
@@ -132,8 +134,8 @@
   * @param boolean   可选，true为深拷贝，默认浅拷贝
   * @param {object|array} 被覆盖的对象
   * @param {object|array} 需要复制的对象
-  * 
   * @return {object|array} 被覆盖的对象
+  * 
   */
   jc.extend  = function () { 
     var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {},
@@ -379,19 +381,26 @@
   * 最大值
   * 
   * @param data 数据
-  * @param fn 处理逻辑，纯数字数组允许为空
+  * @param iteratee 处理逻辑，纯数字数组允许为空
   */
-  jc.max = function (data, fn) {
+  jc.max = function (data, iteratee) {
     if (!data || data.length == 0) return data;
     var result;
     // 兼容空值
-    fn = fn ? fn : function (row) {
-      return row
-    };
-    jc.map(data,function (row) {
+    if (jc.isString(iteratee)) {
+      var key = iteratee;
+      iteratee = function (row) {
+        return row[key]
+      };
+    } else if (jc.isUndefined(iteratee)) {
+      iteratee = function (row) {
+        return row
+      };
+    }
+    jc.map(data, function (row) {
       // num1 num2 以防空值出现
-      var num1 = result ? fn(result) : result;
-      var num2 = row ? fn(row) : row;
+      var num1 = result ? iteratee(result) : result;
+      var num2 = row ? iteratee(row) : row;
       if (jc.isNoVal(num1) || jc.isNoVal(num2)) {
         // 存在空值情况下(undefined和null)
         result = jc.isNoVal(num1) ? row : result
@@ -406,26 +415,32 @@
 * 最小值
 * 
 * @param data 数据
-* @param fn 处理逻辑，纯数字数组允许为空
+* @param iteratee 处理逻辑，纯数字数组允许为空
 */
-  jc.min = function (data, fn) {
+  jc.min = function (data, iteratee) {
     if (!data || data.length == 0) return data;
     var result;
-    // 兼容空值
-    fn = fn ? fn : function (row) {
-      return row
-    };
+    if (jc.isString(iteratee)) {
+      var key = iteratee;
+      iteratee = function (row) {
+        return row[key]
+      };
+    } else if (jc.isUndefined(iteratee)) {
+      iteratee = function (row) {
+        return row
+      };
+    }
     jc.map(data, function (row) {
       // num1 num2 以防空值出现
-      var num1 = result ? fn(result) : result;
-      var num2 = row ? fn(row) : row;
+      var num1 = result ? iteratee(result) : result;
+      var num2 = row ? iteratee(row) : row;
       if (jc.isNoVal(num1) || jc.isNoVal(num2)) {
         // 存在空值情况下(undefined和null)
         result = jc.isNoVal(num1) ? row : result
       } else {
-        result = num1 < num2 ? result : row
+        result = num1 < num2 ? result : row;
       }
-    })
+    });
     return result
   };
 
@@ -777,7 +792,7 @@
   *
   * @private
   * @param {array} table 数据
-  * @param {object|array} limit 检索行
+  * @param {number|array} limit 检索行
   */
   function sqlLimit (table, limit) {
     if (!limit && limit != 0) return table;

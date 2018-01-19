@@ -631,10 +631,16 @@ describe("test/JCalculator.test.js", function () {
     });
 
     it("test keyArray", function () {
-        var data = jc.keyArray(table, ["time", "region"]);
+        var table = [
+            { time: "10/1", mac: 10, win: 20 },
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/1", mac: 45, win: 20 },
+            { time: "10/1", mac: 20, win: 20 }
+        ]
+        var data = jc.keyArray(table, ["time", "mac"]);
         data.should.deepEqual({
-            time: ["10月1日", "10月1日", "10月2日", "10月2日", "10月3日", "10月3日", "10月4日", "10月4日", "10月5日", "10月5日", "10月6日", "10月6日", "10月7日", "10月7日"],
-            region: ["广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳", "广州", "深圳"]
+            time: ["10/1", "10/1", "10/1", "10/1"],
+            mac: [10, 30, 45, 20]
         });
     });
 
@@ -669,13 +675,34 @@ describe("test/JCalculator.test.js", function () {
         [data].should.deepEqual([{ time: "10/1", mac: 45, win: 20 }]);
     });
 
+    it("test jc.max, string type", function () {
+        var table = [
+            { time: "10/1", mac: 10, win: 20 },
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/1", mac: 45, win: 20 },
+            { time: "10/1", mac: 20, win: 20 }
+        ]
+        var data = jc.max(table, "mac");
+        [data].should.deepEqual([{ time: "10/1", mac: 45, win: 20 }]);
+    });
+
     it("test jc.min, arr", function () {
         var table = [5, NaN, undefined, null, 1]
         var result = jc.min(table);
-        console.log(result)
         result.should.deepEqual(1);
     });
 
+
+    it("test jc.min, string", function () {
+        var table = [
+            { time: "10/1", mac: 10, win: 20 },
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/1", mac: 45, win: 2 }
+        ]
+        var data = jc.min(table, "mac");
+        [data].should.deepEqual([{ time: "10/1", mac: 10, win: 20 }]);
+    });
+    
     it("test jc.min, arr-obj", function () {
         var table = [
             { time: "10/1", mac: 10, win: 20 },
@@ -751,10 +778,38 @@ describe("test/JCalculator.test.js", function () {
         });
     });
 
+    it("test jc.where, object type", function () {
+        var table = [
+            { time: "10/1", mac: 10, win: 20 },
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/1", mac: 45, win: 20 },
+            { time: "10/2", mac: 30, win: 3 },
+        ];
+        var data = jc.where(table, { mac: 30 });
+        data.should.deepEqual([
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/2", mac: 30, win: 3 },
+        ]);
+    });
 
-    it("test keyBreak", function () {
-        var tb = [{ time: "10/1", mac: 10, win: 20 }]
-        var data = jc.keyBreak(tb, {
+    it("test jc.where, function type", function () {
+        var table = [
+            { time: "10/1", mac: 10, win: 20 },
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/1", mac: 45, win: 20 },
+            { time: "10/2", mac: 30, win: 3 },
+        ];
+        var data = jc.where(table, function(row) {
+            return row.time == "10/2" && row.mac == 30
+        });
+        data.should.deepEqual([
+            { time: "10/2", mac: 30, win: 3 }
+        ]);
+    });
+
+    it("test jc.keyBreak", function () {
+        var table = [{ time: "10/1", mac: 10, win: 20 }]
+        var data = jc.keyBreak(table, {
             break: ["mac", "win"],
             key: "key",
             value: "value",
@@ -766,15 +821,15 @@ describe("test/JCalculator.test.js", function () {
         ]);
     });
 
-    it("test unique", function () {
-        var tb = [
+    it("test jc.unique", function () {
+        var table = [
             { number: 1, name: "Colin" },
             { number: 1, name: "Colin" },
             { number: 2, name: "Colin" },
             { number: 3, name: "Mr Chen" },
             { number: 3, name: "Mr Chen" }
         ]
-        var data = jc.unique(tb);
+        var data = jc.unique(table);
         [
             { number: 1, name: "Colin" },
             { number: 2, name: "Colin" },
@@ -782,7 +837,7 @@ describe("test/JCalculator.test.js", function () {
         ].should.deepEqual(data);
     });
 
-    it("test spaceFix", function () {
+    it("test jc.spaceFix", function () {
         var time = [
             { TIME: 1, IN: 10, OUT: 10 },
             { TIME: 2, IN: 20, OUT: 20 },
@@ -815,37 +870,40 @@ describe("test/JCalculator.test.js", function () {
         ]);
     });
 
-    it("test jc.orderBy", function () {
-        var table = [
-            { TIME: 1, IN: 10, OUT: 10 },
-            { TIME: 2, IN: 20, OUT: 20 },
-            { TIME: 3, IN: 30, OUT: 30 }
-        ];
-        var order = jc.orderBy(table, {IN:"DESC"});
-        order.should.deepEqual([
-            { TIME: 3, IN: 30, OUT: 30 },
-            { TIME: 2, IN: 20, OUT: 20 },
-            { TIME: 1, IN: 10, OUT: 10 }
-        ]);
-    });
-
-    it("test jc.limit", function () {
+    it("test jc.spaceFix, test time", function () {
         var time = [
-            { TIME: 1, IN: 10, OUT: 10 },
-            { TIME: 2, IN: 20, OUT: 20 },
-            { TIME: 3, IN: 30, OUT: 30 },
-            { TIME: 7, IN: 20, OUT: 40 },
-            { TIME: 8, IN: 30, OUT: 50 },
-            { TIME: 11, IN: 40, OUT: 60 }
+            { TIME: 1514736000, IN: 10, OUT: 10 },
+            { TIME: 1514822400, IN: 20, OUT: 20 },
+            { TIME: 1514908800, IN: 30, OUT: 30 },
+            { TIME: 1515254400, IN: 20, OUT: 40 },
+            { TIME: 1515340800, IN: 30, OUT: 50 },
+            { TIME: 1515600000, IN: 40, OUT: 60 }
         ];
-        var fix = jc.limit(time, 2);
+        var fix = jc.spaceFix(time, {
+            key: "TIME",
+            start: 1514649600,
+            end: 1515686400,
+            space: 86400,
+            zeroFill: ["IN", "OUT"]
+        });
         fix.should.deepEqual([
-            { TIME: 1, IN: 10, OUT: 10 },
-            { TIME: 2, IN: 20, OUT: 20 }
+            { TIME: 1514649600, IN: 0, OUT: 0 },
+            { TIME: 1514736000, IN: 10, OUT: 10 },
+            { TIME: 1514822400, IN: 20, OUT: 20 },
+            { TIME: 1514908800, IN: 30, OUT: 30 },
+            { TIME: 1514995200, IN: 0, OUT: 0 },
+            { TIME: 1515081600, IN: 0, OUT: 0 },
+            { TIME: 1515168000, IN: 0, OUT: 0 },
+            { TIME: 1515254400, IN: 20, OUT: 40 },
+            { TIME: 1515340800, IN: 30, OUT: 50 },
+            { TIME: 1515427200, IN: 0, OUT: 0 },
+            { TIME: 1515513600, IN: 0, OUT: 0 },
+            { TIME: 1515600000, IN: 40, OUT: 60 },
+            { TIME: 1515686400, IN: 0, OUT: 0 }
         ]);
     });
 
-    it("test sapceFix, empty", function () {
+    it("test jc.sapceFix, empty", function () {
         var time = [];
         var fix = jc.spaceFix(time, {
             key: "TIME",
@@ -857,7 +915,55 @@ describe("test/JCalculator.test.js", function () {
         fix.should.deepEqual([]);
     });
 
-    it("test group array type", function () {
+    it("test jc.orderBy", function () {
+        var table = [
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 4, IN: 30, OUT: 40 }
+        ];
+        var order = jc.orderBy(table, {IN:"DESC", OUT:"ASC"});
+        order.should.deepEqual([
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 4, IN: 30, OUT: 40 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 1, IN: 10, OUT: 10 }
+        ]);
+    });
+
+    it("test jc.order", function () {
+        var table = [
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 4, IN: 30, OUT: 40 }
+        ];
+        var order = jc.order(table, { IN: "DESC", OUT: "ASC" });
+        order.should.deepEqual([
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 4, IN: 30, OUT: 40 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 1, IN: 10, OUT: 10 }
+        ]);
+    });
+
+    it("test jc.limit", function () {
+        var data = [
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 },
+            { TIME: 3, IN: 30, OUT: 30 },
+            { TIME: 7, IN: 20, OUT: 40 },
+            { TIME: 8, IN: 30, OUT: 50 },
+            { TIME: 11, IN: 40, OUT: 60 }
+        ];
+        var limit = jc.limit(data, 2);
+        limit.should.deepEqual([
+            { TIME: 1, IN: 10, OUT: 10 },
+            { TIME: 2, IN: 20, OUT: 20 }
+        ]);
+    });
+
+    it("test jc.group array type", function () {
         var group = jc.group(table, function(row) {
             return row.time
         })
@@ -890,5 +996,21 @@ describe("test/JCalculator.test.js", function () {
                 { time: "10月7日", inPerson: 1200, outPerson: 7, region: "深圳" }
             ]
         });
+    });
+
+    it("test jc.map", function () {
+        var table;
+        var data = jc.map(table, function () {
+
+        });
+        data.should.deepEqual([]);
+    });
+
+    it("test jc.forIn", function () {
+        var table;
+        var data = jc.forIn(table, function () {
+            return [];
+        });
+        data.should.deepEqual({});
     });
 });

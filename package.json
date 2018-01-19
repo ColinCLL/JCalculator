@@ -4,8 +4,7 @@
   "description": "json calculator,json sql in javascript",
   "main": "JCalculator.js",
   "scripts": {
-    "test": "dev",
-    "mocha": "istanbul cover ./node_modules/mocha/bin/_mocha"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha"
   },
   "keywords": [
     "jcalculator",
@@ -19,15 +18,15 @@
   "author": "Colin Chen",
   "license": "MIT",
   "dependencies": {
+  },
+  "devDependencies": {
+    "istanbul": "^0.4.5",
+    "mocha": "^4.0.1",
+    "should": "^13.1.3",
     "gulp": "^3.9.1",
     "gulp-eslint": "^4.0.0",
     "gulp-livereload": "^3.8.1",
     "gulp-uglify": "^3.0.0",
     "gulp-webserver": "^0.9.1"
-  },
-  "devDependencies": {
-    "istanbul": "^0.4.5",
-    "mocha": "^4.0.1",
-    "should": "^13.1.3"
   }
 }
