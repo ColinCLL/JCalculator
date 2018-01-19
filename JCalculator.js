@@ -7,18 +7,19 @@
   // 原型赋值，便于压缩
   var ArrayProto = Array.prototype, ObjProto = Object.prototype;
   var push = ArrayProto.push,
-  slice = ArrayProto.slice,
-  toString = ObjProto.toString,
-  hasOwnProperty = ObjProto.hasOwnProperty;
+    slice = ArrayProto.slice,
+    toString = ObjProto.toString,
+    hasOwnProperty = ObjProto.hasOwnProperty;
   // 定义了一些ECMAScript 5方法
   var nativeIsArray = Array.isArray,
-  nativeKeys = Object.keys,
-  nativeValues = Object.values ? Object.values : function (obj) {
-     return nativeKeys(obj).map(function (key) {
-       return obj[key];
-     })
-  },
-  nativeCreate = Object.create;
+    nativeKeys = Object.keys,
+    nativeValues = Object.values ? Object.values : function (obj) {
+      return nativeKeys(obj).map(function (key) {
+        return obj[key];
+      })
+    },
+    nativeCreate = Object.create;
+
   // 创建一个jc对象, 保留将来有拓展成支持链式的可能
   var jc = function (obj) {
     if (obj instanceof jc) return obj;
@@ -135,9 +136,8 @@
   * @param {object|array} 被覆盖的对象
   * @param {object|array} 需要复制的对象
   * @return {object|array} 被覆盖的对象
-  * 
   */
-  jc.extend  = function () { 
+  jc.extend = function () {
     var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {},
       i = 1,
       length = arguments.length,
@@ -166,14 +166,14 @@
           if (deep && copy && (jc.isObject(copy) || (copyIsArray = jc.isArray(copy)))) {
             if (copyIsArray) {
               copyIsArray = false;
-              clone = src && jc.isArray(src) ? src : []; 
+              clone = src && jc.isArray(src) ? src : [];
             } else {
               clone = src && jc.isObject(src) ? src : {};
             }
             // 递归
             target[name] = jc.extend(deep, clone, copy);
           } else if (copy !== undefined) {
-            target[name] = copy; 
+            target[name] = copy;
           }
         }
       }
@@ -188,13 +188,13 @@
   * @param {array} data 数据
   */
   jc.unique = function (data) {
-    if ( !data || data.length == 0) return data;
-    var newObj = {}, newArr=[];
+    if (!data || data.length == 0) return data;
+    var newObj = {}, newArr = [];
     var arr = jc.map(data, function (d) {
       var item = JSON.stringify(d);
       newObj[item] = d;
     });
-    jc.forIn(newObj, function (key,row) {
+    jc.forIn(newObj, function (key, row) {
       newArr.push(row);
     });
     return newArr;
@@ -202,9 +202,9 @@
 
 
   jc.spaceFix = function (data, set) {
-    if ( !data || data.length == 0) return data;
+    if (!data || data.length == 0) return data;
     var fix = [];
-    //补起点
+    // 补起点
     if (data[0][set.key] - set.start > 0) {
       var obj = {};
       obj[set.key] = set.start;
@@ -213,7 +213,7 @@
       })
       data.unshift(obj);
     }
-    //补结束点
+    // 补结束点
     if (data[data.length - 1][set.key] < set.end) {
       var obj = {};
       obj[set.key] = set.end;
@@ -222,7 +222,7 @@
       });
       data.push(obj);
     }
-    
+
     for (var i = 1, j = 0, len = data.length; i < len; i++) {
       if (i > 10000) break;
       var space = data[i][set.key] - data[i - 1][set.key];
@@ -257,11 +257,11 @@
   * @param [keyName, keyName, ...] keyList转数组的键名
   */
   jc.keyArray = function (data, keyList) {
-    if ( !data || data.length == 0) return data;
+    if (!data || data.length == 0) return data;
     var objList = {}
-    jc.map(data, function (d,i) {
+    jc.map(data, function (d, i) {
       jc.map(keyList, function (e, j) {
-        if(!objList[e]) objList[e]=[];
+        if (!objList[e]) objList[e] = [];
         objList[e].push(d[e]);
       })
     })
@@ -277,7 +277,7 @@
   * @param {} option拆分数据配置项
   */
   jc.keyBreak = function (data, option) {
-    if ( !data || data.length == 0) return data;
+    if (!data || data.length == 0) return data;
     var arr = [];
     var key = option.key;
     var value = option.value;
@@ -295,15 +295,15 @@
     return arr;
   };
 
-/**
-* compare
-* 比较数字大小
-*
-* @private
-* @param num1  数据
-* @param num2  数据
-* @param type  取值类型
-*/
+  /**
+  * compare
+  * 比较数字大小
+  *
+  * @private
+  * @param num1  数据
+  * @param num2  数据
+  * @param type  取值类型
+  */
   function compare (num1, num2, type) {
     var result;
     if (jc.isNoVal(num1) || jc.isNoVal(num2)) {
@@ -379,7 +379,7 @@
 
   /**
   * 最大值
-  * 
+  *
   * @param data 数据
   * @param iteratee 处理逻辑，纯数字数组允许为空
   */
@@ -411,12 +411,12 @@
     return result
   };
 
-/**
-* 最小值
-* 
-* @param data 数据
-* @param iteratee 处理逻辑，纯数字数组允许为空
-*/
+  /**
+  * 最小值
+  *
+  * @param data 数据
+  * @param iteratee 处理逻辑，纯数字数组允许为空
+  */
   jc.min = function (data, iteratee) {
     if (!data || data.length == 0) return data;
     var result;
@@ -452,7 +452,7 @@
   * @param {object|array|string} key 分组条件
   */
   jc.group = jc.groupBy = function (val, key) {
-    if ( !val || val.length == 0) return val;
+    if (!val || val.length == 0) return val;
     var groups = {};
     jc.map(val, function (row, i) {
       var k = [];
@@ -463,7 +463,6 @@
           } else {
             k.push(row[a]);
           }
-          
         })
       } else if (jc.isString(key)) {
         k.push(row[key])
@@ -480,7 +479,7 @@
     errorCheck(query);
     if (query.from.length == 0 || !jc.isArray(query.from)) return [];
     var table = query.from;
-    var whereData, groupData, havingData, selectData, orderData,limitData;
+    var whereData, groupData, havingData, selectData, orderData, limitData;
     whereData = sqlWhere(table, query.where);
     groupData = sqlGroup(whereData, query);
     havingData = sqlhaving(groupData, query.having)
@@ -498,12 +497,12 @@
 
   function groupCheck (query) {
     var select = query.select, groupBy = query.groupBy;
-    if(!(select.sum || select.avg || select.count || select.max || select.min)) return;
-    if(select.col && !query.groupBy) return;
+    if (!(select.sum || select.avg || select.count || select.max || select.min)) return;
+    if (select.col && !query.groupBy) return;
     var col = selectType("", select.col);
-        col = nativeValues(col);
+    col = nativeValues(col);
     var group = [];
-    var flag = false; 
+    var flag = false;
     if (jc.isArray(groupBy)) {
       jc.map(groupBy, function (a, i) {
         group.push(a);
@@ -514,22 +513,22 @@
       group = [groupBy];
     }
 
-    for (var i = 0, len = col.length; i < len; i++ ) {
+    for (var i = 0, len = col.length; i < len; i++) {
       for (var j = 0; j < len; j++) {
         if (col[i] == group[j]) {
           flag = true;
           break;
         } else if (jc.isObject(col[i]) && jc.isObject(group[j])) {
-          if(String(col[i]) ===  String(group[j])) {
+          if (String(col[i]) === String(group[j])) {
             flag = true;
             break;
           }
         }
       }
       if (!flag) {
-        throw new Error("groupBy should contain select.col","Error groupBy");
+        throw new Error("groupBy should contain select.col", "Error groupBy");
       } else {
-        flag = false; 
+        flag = false;
       }
     }
   }
@@ -542,12 +541,15 @@
   function sqlGroup (table, query) {
     var flag;
     jc.forIn(query.select, function (key, val) {
-      val = key == "col" ? false : true ;
+      val = key == "col" ? false : true;
       flag = !!val || flag;
     })
-    if (!query.groupBy && !flag) return table;                     // 只有col选项 
-    if (!query.groupBy && !query.select.col) return {table: table};// 没有group和col
-    return jc.group(table, query.groupBy); // 有group
+    // 只有col选项
+    if (!query.groupBy && !flag) return table;
+    // 没有group和col
+    if (!query.groupBy && !query.select.col) return {table: table};
+    // 有group
+    return jc.group(table, query.groupBy);
   }
 
   /**
@@ -557,19 +559,20 @@
   * @param {table} table 数据
   * @param {object} having 组筛选配置
   */
-  function sqlhaving(table, having) {
-    if(!having) return table;
+  function sqlhaving (table, having) {
+    if (!having) return table;
     var sumObj = {}, avgObj = {}, maxObj = {}, minObj = {}, countObj = {};
     var havingData = {};
     jc.forIn(having, function (key, val) {
-      var reg=/[1-9a-zA-z_\$\@]+/g;
+      var reg = /[1-9a-zA-z_\$\@]+/g;
       var splitKey = key.split("_");
-      var type = splitKey.shift(); // 首个_前面部分为聚合运算类型
-      var formula = splitKey.join("_"); 
+      // 首个_前面部分为聚合运算类型
+      var type = splitKey.shift();
+      var formula = splitKey.join("_");
       // 根据运算符号拆分出字段，在前后加上对应内容变成row["key"]这样的字符串
       formula = formula.replace(reg, function (match) {
         return "row['" + match + "']";
-      }); 
+      });
 
       switch (type) {
       case "sum":
@@ -734,7 +737,7 @@
           var rowVal = jc.isFunction(val) ? val(row) : row[val];
           if (jc.isUndefined(newRow[key])) newRow[key] = 0;
           switch (key) {
-            case val == "*" ? key : "count_*":
+          case val == "*" ? key : "count_*":
             newRow[key] = itemLength;
             break;
           default :
