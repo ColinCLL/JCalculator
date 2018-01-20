@@ -613,7 +613,13 @@
   */
   function sqlhaving (table, having) {
     if (!having) return table;
-    var sumObj = {}, avgObj = {}, maxObj = {}, minObj = {}, countObj = {};
+    var operation = {
+      sumObj: {},
+      avgObj: {},
+      maxObj: {},
+      minObj: {},
+      countObj: {}
+    };
     var havingData = {};
     jc.forIn(having, function (key, val) {
       var reg = /[1-9a-zA-z_\$\@]+/g;
@@ -628,34 +634,34 @@
 
       switch (type) {
       case "sum":
-        sumObj[key] = function (row) {
+        operation.sumObj[key] = function (row) {
           return (new Function("row", "return " + formula))(row);
         };
         break;
       case "avg":
-        avgObj[key] = function (row) {
+        operation.avgObj[key] = function (row) {
           return (new Function("row", "return " + formula))(row);
         };
         break;
       case "max":
-        maxObj[key] = function (row) {
+        operation.maxObj[key] = function (row) {
           return (new Function("row", "return " + formula))(row);
         };
         break;
       case "min":
-        minObj[key] = function (row) {
+        operation.minObj[key] = function (row) {
           return (new Function("row", "return " + formula))(row);
         };
         break;
       case "count":
-        countObj[key] = function (row) {
+        operation.countObj[key] = function (row) {
           return (new Function("row", "return " + formula))(row);
         };
         break;
       }
     })
     jc.forIn(table, function (groupKey, groupItem, obj, i) {
-      var row = groupCal(groupItem, null, sumObj, avgObj, maxObj, minObj, countObj);
+      var row = groupCal(groupItem, operation);
       var flag;
       for (var key in having) {
         foo = new Function("return " + row[key] + having[key]);
@@ -686,20 +692,21 @@
   function sqlSelect (table, select) {
     if (!select) throw new Error("Select is not defined", "Error select");
     var selectData = [];
-    if (select.col) var colObj = selectType("", select.col);
-    if (select.sum) var sumObj = selectType("sum_", select.sum);
-    if (select.avg) var avgObj = selectType("avg_", select.avg);
-    if (select.max) var maxObj = selectType("max_", select.max);
-    if (select.min) var minObj = selectType("min_", select.min);
-    if (select.count) var countObj = selectType("count_", select.count);
+    var operation = {};
+    if (select.col) operation.colObj = selectType("", select.col);
+    if (select.sum) operation.sumObj = selectType("sum_", select.sum);
+    if (select.avg) operation.avgObj = selectType("avg_", select.avg);
+    if (select.max) operation.maxObj = selectType("max_", select.max);
+    if (select.min) operation.minObj = selectType("min_", select.min);
+    if (select.count) operation.countObj = selectType("count_", select.count);
     if (!jc.isArray(table)) {
       jc.forIn(table, function (groupKey, groupItem, obj, i) {
-        var row = groupCal(groupItem, colObj, sumObj, avgObj, maxObj, minObj, countObj);
+        var row = groupCal(groupItem, operation);
         selectData.push(row);
       });
     } else {
       jc.map(table, function (groupItem, i) {
-        var row = groupCal([groupItem], colObj, sumObj, avgObj, maxObj, minObj, countObj);
+        var row = groupCal([groupItem], operation);
         selectData.push(row);
       });
     }
@@ -743,26 +750,26 @@
   * @param {object} minObj 选择列最小值的对象键信息
   * @param {object} countObj 选择列计数的对象键信息
   */
-  function groupCal (groupItem, colObj, sumObj, avgObj, maxObj, minObj, countObj) {
+  function groupCal (groupItem, operation) {
     var newRow = {};
     var itemLength = groupItem.length, validLength = {};
     jc.map(groupItem, function (row) {
-      if (!jc.isObjEmpty(colObj)) {
-        jc.forIn(colObj, function (key, val) {
+      if (!jc.isObjEmpty(operation.colObj)) {
+        jc.forIn(operation.colObj, function (key, val) {
           var rowVal = jc.isFunction(val) ? val(row) : row[val];
           newRow[key] = rowVal;
         })
       }
 
-      if (!jc.isObjEmpty(sumObj)) {
-        jc.forIn(sumObj, function (key, val) {
+      if (!jc.isObjEmpty(operation.sumObj)) {
+        jc.forIn(operation.sumObj, function (key, val) {
           var rowVal = jc.isFunction(val) ? val(row) : row[val];
           newRow[key] ? newRow[key] += rowVal || 0 : newRow[key] = rowVal || 0;
         })
       }
 
-      if (!jc.isObjEmpty(avgObj)) {
-        jc.forIn(avgObj, function (key, val) {
+      if (!jc.isObjEmpty(operation.avgObj)) {
+        jc.forIn(operation.avgObj, function (key, val) {
           if (!validLength[key]) validLength[key] = 0;
           var rowVal = jc.isFunction(val) ? val(row) : row[val];
           newRow[key] ? newRow[key] += rowVal || 0 : newRow[key] = rowVal || 0;
@@ -770,22 +777,22 @@
         })
       }
 
-      if (!jc.isObjEmpty(maxObj)) {
-        jc.forIn(maxObj, function (key, val) {
+      if (!jc.isObjEmpty(operation.maxObj)) {
+        jc.forIn(operation.maxObj, function (key, val) {
           var rowVal = jc.isFunction(val) ? val(row) : row[val];
           newRow[key] = compare(newRow[key], rowVal, "max");
         })
       }
 
-      if (!jc.isObjEmpty(minObj)) {
-        jc.forIn(minObj, function (key, val) {
+      if (!jc.isObjEmpty(operation.minObj)) {
+        jc.forIn(operation.minObj, function (key, val) {
           var rowVal = jc.isFunction(val) ? val(row) : row[val];
           newRow[key] = compare(newRow[key], rowVal, "min");
         })
       }
 
-      if (!jc.isObjEmpty(countObj)) {
-        jc.forIn(countObj, function (key, val) {
+      if (!jc.isObjEmpty(operation.countObj)) {
+        jc.forIn(operation.countObj, function (key, val) {
           var rowVal = jc.isFunction(val) ? val(row) : row[val];
           if (jc.isUndefined(newRow[key])) newRow[key] = 0;
           switch (key) {
@@ -801,7 +808,7 @@
       }
     })
 
-    jc.forIn(avgObj, function (key, val) {
+    jc.forIn(operation.avgObj, function (key, val) {
       newRow[key] = newRow[key] / validLength[key];
     })
     return newRow;
