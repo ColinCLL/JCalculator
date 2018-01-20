@@ -128,6 +128,58 @@
   }
 
   /**
+  * tree
+  * 生成树
+  *
+  * @public
+  * @param data 数据
+  * @param option 生成树相关配置项
+  */
+  jc.tree = function (data, option) {
+    if (!option.children) option.children = "children";
+    // 生成jc.sql中的col选择项
+    var col;
+    if (jc.isString(option.retain)) {
+      col = [option.retain, option.id, option.parent]
+    } else if (jc.isArray(option.retain)) {
+      col = option.retain;
+      col.push(option.id);
+      col.push(option.parent);
+    } else if (jc.isObject(option.retain)) {
+      col = option.retain;
+      col[option.id] = option.id;
+      col[option.parent] = option.parent;
+    } else {
+      // 为了不影响原始数据
+      data = jc.extend(true, [], data);
+    }
+    // 使用sql方法，生成data;
+    if (col) {
+      data = jc.sql({
+        select: {
+          col: col
+        },
+        from: data
+      })
+    }
+
+    // 上面都是都是为了提高灵活度，让用户能有自己的骚操作。下面才是生成树的核心
+    var group = jc.groupBy(data, function (row) {
+      return row[option.parent]
+    });
+    jc.map(data, function (row) {
+      // 行的ID相当于分组中的父ID
+      var parentId = row[option.id]
+      if (parentId && group[parentId]) {
+        row[option.children] = group[parentId];
+      }
+    })
+    var root = {};
+    root[option.children] = group[option.root];
+    return root
+  }
+
+  /**
   * extend
   * 此段偷懒，大部分引用了jquery的extend，用法和jq一致;
   *
