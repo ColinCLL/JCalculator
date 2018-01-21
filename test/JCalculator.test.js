@@ -1114,6 +1114,79 @@ describe("test/JCalculator.test.js", function () {
         });
     });
 
+    it("test jc.tree，has root row", function () {
+        var table = [
+            { id: 0, pid: null, name: "world", value: 1231 },
+            { id: 1, pid: 0, name: "china", value: 1231 },
+            { id: 2, pid: 1, name: "guangdong", value: 4321 },
+            { id: 3, pid: 2, name: "shenzhen", value: 461 },
+            { id: 4, pid: 2, name: "guangzhou", value: 512 },
+            { id: 5, pid: 0, name: "USA", value: 911 },
+            { id: 6, pid: 5, name: "AK", value: 654 }
+        ];
+        var data = jc.tree(table, {
+            root: 0,
+            id: "id",
+            parent: "pid",
+            retain: {
+                palce: "name",
+                value: function (row) {
+                    return "$" + row.value
+                }
+            }
+        });
+        data.should.deepEqual({
+            "palce": "world",
+            "value": "$1231",
+            "id": 0,
+            "pid": null,
+            "children": [
+                {
+                    "palce": "china",
+                    "value": "$1231",
+                    "id": 1,
+                    "pid": 0,
+                    "children": [
+                        {
+                            "palce": "guangdong",
+                            "value": "$4321",
+                            "id": 2,
+                            "pid": 1,
+                            "children": [
+                                {
+                                    "palce": "shenzhen",
+                                    "value": "$461",
+                                    "id": 3,
+                                    "pid": 2
+                                },
+                                {
+                                    "palce": "guangzhou",
+                                    "value": "$512",
+                                    "id": 4,
+                                    "pid": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "palce": "USA",
+                    "value": "$911",
+                    "id": 5,
+                    "pid": 0,
+                    "children": [
+                        {
+                            "palce": "AK",
+                            "value": "$654",
+                            "id": 6,
+                            "pid": 5
+                        }
+                    ]
+                }
+            ]
+        });
+    });
+
     it("test jc.tree，retain is object", function () {
         var table = [
             { id: 1, pid: 0, name: "china", value: 1231 },

@@ -1,5 +1,14 @@
 var gulp = require("gulp");
 var eslint = require("gulp-eslint");
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
+
+gulp.task('script', function () {
+  return gulp.src('./JCalculator.js') // 指明源文件路径、并进行文件匹配
+    .pipe(uglify({})) // 使用uglify进行压缩，并保留部分注释
+    .pipe(rename('JCalculator.min.js'))
+    .pipe(gulp.dest('./')); // 输出路径
+});
 
 gulp.task("lint", function () {
   // ESLint ignores files with "node_modules" paths. 

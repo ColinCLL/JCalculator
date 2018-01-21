@@ -164,18 +164,21 @@
     }
 
     // 上面都是都是为了提高灵活度，让用户能有自己的骚操作。下面才是生成树的核心
+    var root = {};
     var group = jc.groupBy(data, function (row) {
+      console.log(row[option.id] == option.root, row[option.id],option.root,333,444,555,666)
+      if (row[option.id] == option.root) root = row; // 假如数据中根节点不是虚拟存在的
       return row[option.parent]
     });
     jc.map(data, function (row) {
       // 行的ID相当于分组中的父ID
       var parentId = row[option.id]
-      if (parentId && group[parentId]) {
+      if (group[parentId]) {
         row[option.children] = group[parentId];
       }
     })
-    var root = {};
-    root[option.children] = group[option.root];
+    
+    if (jc.isObjEmpty(root)) root[option.children] = group[option.root];
     return root
   }
 
