@@ -998,6 +998,36 @@ describe("test/JCalculator.test.js", function () {
         });
     });
 
+    
+    it("test jc.groupBy", function () {
+        var data = [
+            { name: "apple", sell: 15, week: 2 },
+            { name: "apple", sell: 5, week: 3 },
+            { name: "apple", sell: 13, week: 4 },
+            { name: "apple", sell: 3, week: 5 },
+            { name: "banana", sell: 4, week: 2 },
+            { name: "banana", sell: 5, week: 3 },
+            { name: "banana", sell: 2, week: 4 },
+            { name: "banana", sell: 2, week: 5 }
+        ];
+
+        var group = jc.groupBy(data, "name")
+        group.should.deepEqual({
+            apple:[
+                { name: "apple", sell: 15, week: 2 },
+                { name: "apple", sell: 5, week: 3 },
+                { name: "apple", sell: 13, week: 4 },
+                { name: "apple", sell: 3, week: 5 },
+            ],
+            banana:[
+                { name: "banana", sell: 4, week: 2 },
+                { name: "banana", sell: 5, week: 3 },
+                { name: "banana", sell: 2, week: 4 },
+                { name: "banana", sell: 2, week: 5 }
+            ]
+        });
+    });
+
     it("test jc.tree", function () {
         var table = [
             { id: 1, pid: 0, name: "china" },
