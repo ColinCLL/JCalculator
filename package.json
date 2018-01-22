@@ -15,7 +15,7 @@
     "calculator"
   ],
   "author": "Colin Chen/陈立林",
-  "email": ["chenlilin1993@gmail.com" ,"245839124@qq.com"],
+  "email": ["chenlilin1993@gmail.com", "245839124@qq.com"],
   "license": "MIT",
   "files": [
     "JCalculator.js",

@@ -237,7 +237,7 @@
 
   /**
   * 去重
-  *
+  * 我也知道es6有个更好的处理，将来有空我会试着用es6重构整个项目。当然，欢迎直接PR。
   * @public
   * @param {array} data 数据
   */
@@ -574,6 +574,9 @@
         return "row['" + match + "']";
       });
 
+
+      // 下面都是字符串拼成算式，通过new Function执行,返回后计算返回是true的分组, 自己review都差点忘记，尴尬！
+      // 生成对应的操作operation,都是一个function, 相当于每个分组都进行了一次sql查询了
       switch (type) {
       case "sum":
         operation.sumObj[key] = function (row) {
