@@ -1,22 +1,25 @@
 {
   "name": "jcalculator",
   "version": "1.0.0",
-  "description": "json calculator,json sql in javascript",
+  "description": "json calculator for javascript",
   "main": "JCalculator.js",
   "scripts": {
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha"
   },
   "keywords": [
     "jcalculator",
+    "sql for javascript",
     "sql\u001b[D\u001b[D\u001b[Djson",
-    "sql",
     "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
     "\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[D\u001b[D\u001b[D\u001b[D",
-    "json",
     "calculator"
   ],
-  "author": "Colin Chen",
+  "author": "Colin Chen/陈立林",
   "license": "MIT",
+  "files": [
+    "JCalculator.js",
+    "JCalculator.min.js"
+  ],
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.9.1",
