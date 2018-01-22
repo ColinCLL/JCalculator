@@ -24,7 +24,7 @@ gulp.task("lint", function () {
         "no-dupe-args":1,
         "use-isnan":1,
         "curly":[1, "multi-line"],
-        "no-useless-escape":1,
+        // "no-useless-escape":1,
         "no-unused-vars":1,
         "array-bracket-spacing":1,
         "block-spacing":1,
@@ -57,7 +57,7 @@ gulp.task("lint", function () {
         "no-irregular-whitespace": "error", // 禁止不规则的空白。 
         "template-curly-spacing": ["error", "never"], // 强制模板字符串中花括号内不能出现空格  
         "linebreak-style": [1, "windows"],
-        "new-cap":1
+        //"new-cap":1
       }
     }))
     .pipe(eslint.format())

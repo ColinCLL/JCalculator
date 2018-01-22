@@ -120,8 +120,8 @@
   * orderBy
   *
   * @public
-  * @param array val 数据
-  * @param object||function iteratee 排序条件
+  * @param array data 数据
+  * @param {object||function} iteratee 排序条件
   */
   jc.order = jc.orderBy = function (data, iteratee) {
     return sqlOrder(data, iteratee);
@@ -166,7 +166,6 @@
     // 上面都是都是为了提高灵活度，让用户能有自己的骚操作。下面才是生成树的核心
     var root = {};
     var group = jc.groupBy(data, function (row) {
-      console.log(row[option.id] == option.root, row[option.id],option.root,333,444,555,666)
       if (row[option.id] == option.root) root = row; // 假如数据中根节点不是虚拟存在的
       return row[option.parent]
     });
@@ -177,7 +176,7 @@
         row[option.children] = group[parentId];
       }
     })
-    
+
     if (jc.isObjEmpty(root)) root[option.children] = group[option.root];
     return root
   }
@@ -371,67 +370,6 @@
     return result
   };
 
-
-
-
-  /**
-  * 加法
-  * 以完成但不开放，因为不是内置SQL方法里面的，感觉没必要开放一个重复功能的东西。
-  * 输入输出自由度和灵活度都比SQL函数的高，但同时也造成使用方式不一致，容易造成用户困扰，这也是搁置主要原因之一。
-  * 初心：若只需要sum这类型聚合，写成SQl形式未免有些麻烦，现应该斟酌对比reduce和SQL的sum再封装的语法糖那种更好。
-  * @public
-  * @param {array} data 数据
-  * @param {object|array|string} key 相加的键配置
-  */
-  // jc.sum = function (data, key) {
-  //   if ( !data || data.length == 0) return data;
-  //   var sum, length = 0, count = 0;
-  //   if (jc.isArray(data)) {
-  //     sum = !key || jc.isString(key) ? 0 : {},
-  //     jc.map(data, function (row) {
-  //       if (!key && (jc.isNumber(row))) {
-  //         sum += row || 0;
-  //       } else if (jc.isArray(key) && jc.isObject(row)) {
-  //         jc.map(key, function (k) {
-  //           if (!sum[k]) sum[k] = 0;
-  //           sum[k] += row[k] || 0;
-  //         })
-  //       } else if (jc.isString(key)) {
-  //         sum += row[key] || 0;
-  //       }
-  //     });
-  //   }
-
-  //   if (!jc.isArray(data) && jc.isObject(data)) {
-  //     sum = 0;
-  //     jc.forIn(data, function (k, row, i) {
-  //       if (!!key) {
-  //         jc.map(key, function (k1, j) {
-  //           if (k == k1) sum += row || 0;
-  //         })
-  //       } else {
-  //         sum += row || 0;
-  //       }
-  //     });
-  //   }
-  //   return sum;
-  // }
-
-  /**
-  * max
-  * 暂时搁置，因为不是内置SQL方法里面的，感觉没必要写一个重复功能的东西
-  */
-  // jc.max = function (data, fn) {
-  //   if (!data || data.length == 0) return data;
-  //   var max;
-  //   jc.map(data, function (row) {
-  //     var num1 = max && fn ? fn(max) : row
-  //     var num2 = fn ? fn(row) : row
-  //     max = num1 > num2 ? max : row;
-  //   });
-  //   return max
-  // };
-
   /**
   * 最大值
   *
@@ -490,7 +428,7 @@
       var num1 = result ? iteratee(result) : result;
       var num2 = row ? iteratee(row) : row;
       if (jc.isNoVal(num1) || jc.isNoVal(num2)) {
-        // 存在空值情况下(undefined和null)
+        // 存在空值情况下，选择非空，两个都空我就随意了。
         result = jc.isNoVal(num1) ? row : result
       } else {
         result = num1 < num2 ? result : row;
@@ -550,6 +488,7 @@
     groupCheck(query);
   }
 
+  // 检查group和col之间的关系是否合理
   function groupCheck (query) {
     var select = query.select, groupBy = query.groupBy;
     if (!(select.sum || select.avg || select.count || select.max || select.min)) return;
@@ -746,12 +685,7 @@
   *
   * @private
   * @param {groupItem} groupItem 分组过后的一组数据
-  * @param {object} colObj 选择列的对象键信息
-  * @param {object} sumObj 选择列总和的对象键信息
-  * @param {object} avgObj 选择列平均数的对象键信息
-  * @param {object} maxObj 选择列最大值的对象键信息
-  * @param {object} minObj 选择列最小值的对象键信息
-  * @param {object} countObj 选择列计数的对象键信息
+  * @param {object} operation 选择列的对象键信息，储存各种操作的信息
   */
   function groupCal (groupItem, operation) {
     var newRow = {};
