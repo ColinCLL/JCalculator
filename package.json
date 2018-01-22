@@ -1,0 +1,36 @@
+{
+  "name": "jcalculator",
+  "version": "1.0.0",
+  "description": "json calculator for javascript",
+  "main": "JCalculator.js",
+  "scripts": {
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha"
+  },
+  "keywords": [
+    "jcalculator",
+    "sql for javascript",
+    "sql\u001b[D\u001b[D\u001b[Djson",
+    "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
+    "\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[D\u001b[D\u001b[D\u001b[D",
+    "calculator"
+  ],
+  "author": "Colin Chen/陈立林",
+  "email": ["chenlilin1993@gmail.com", "245839124@qq.com"],
+  "license": "MIT",
+  "files": [
+    "JCalculator.js",
+    "JCalculator.min.js"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^4.0.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "gulp-webserver": "^0.9.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^4.0.1",
+    "should": "^13.1.3"
+  }
+}
