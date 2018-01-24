@@ -838,8 +838,7 @@
   };
 
   jc.isObject = function (val) {
-    var type = typeof val;
-    return type === 'object' && !jc.isArray(val) && !!val;
+    return val instanceof Object;
   };
 
   jc.map(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Symbol', 'Map', 'WeakMap', 'Set', 'WeakSet'], function (name) {
