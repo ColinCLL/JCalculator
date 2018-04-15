@@ -6,7 +6,7 @@
   var previousjc = root.jc;
   // 原型赋值，便于压缩
   var ArrayProto = Array.prototype, ObjProto = Object.prototype;
-  var push = ArrayProto.push,
+  var push = ArrayProto.push
     slice = ArrayProto.slice,
     toString = ObjProto.toString,
     hasOwnProperty = ObjProto.hasOwnProperty;
@@ -36,7 +36,7 @@
     root.jc = jc;
   }
   // 版本
-  jc.VERSION = '1.0.0';
+  jc.VERSION = '1.1.0';
 
   /**
   * 遍历
@@ -312,6 +312,7 @@
   */
   jc.keyArray = function (data, keyList) {
     if (!data || data.length == 0) return data;
+    if (jc.isString(keyList)) keyList = [keyList];
     var objList = {}
     jc.map(data, function (d, i) {
       jc.map(keyList, function (e, j) {
@@ -347,6 +348,24 @@
       });
     })
     return arr;
+  };
+
+  /**
+  * index
+  * 建唯一索引
+  *
+  * @public
+  * @param [obj, obj, ...] data 数据
+  * @param string key值
+  */
+  jc.index = function (data, key) {
+    if (!data || data.length == 0) return data;
+    var obj = {};
+    jc.map(data, function (row) {
+      console.log(row.key)
+      obj[row[key]] = row;
+    });
+    return obj;
   };
 
   /**

@@ -630,6 +630,22 @@ describe("test/JCalculator.test.js", function () {
         }).should.throw("Select is not defined");
     });
 
+    it("test index", function () {
+        var table = [
+            { key: "1", mac: 10, win: 20 },
+            { key: "2", mac: 30, win: 20 },
+            { key: "3", mac: 45, win: 20 },
+            { key: "4", mac: 20, win: 20 }
+        ]
+        var data = jc.index(table, "key");
+        data.should.deepEqual({
+            "1": { key: "1", mac: 10, win: 20 },
+            "2": { key: "2", mac: 30, win: 20 },
+            "3": { key: "3", mac: 45, win: 20 },
+            "4": { key: "4", mac: 20, win: 20 }
+        });
+    });
+
     it("test keyArray", function () {
         var table = [
             { time: "10/1", mac: 10, win: 20 },
@@ -641,6 +657,19 @@ describe("test/JCalculator.test.js", function () {
         data.should.deepEqual({
             time: ["10/1", "10/1", "10/1", "10/1"],
             mac: [10, 30, 45, 20]
+        });
+    });
+
+    it("test keyArray,string", function () {
+        var table = [
+            { time: "10/1", mac: 10, win: 20 },
+            { time: "10/1", mac: 30, win: 20 },
+            { time: "10/1", mac: 45, win: 20 },
+            { time: "10/1", mac: 20, win: 20 }
+        ]
+        var data = jc.keyArray(table, "time");
+        data.should.deepEqual({
+            time: ["10/1", "10/1", "10/1", "10/1"]
         });
     });
 
