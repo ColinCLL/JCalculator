@@ -1,4 +1,4 @@
-# JCalculator 1.0.0
+# JCalculator 1.1.1
 JCalculator is kind of processing data library for javascript. It supports data manipulation of sql, tree, spaceFix and so on.
 
 page-CN: https://colincll.github.io/jc-doc/
