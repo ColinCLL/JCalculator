@@ -71,6 +71,6 @@ gulp.task("watch", function () {
   gulp.watch(["**/*.js", "!node_modules/**"], ["lint"]);
 });
 
-gulp.task("default", ["lint"], function () {
+gulp.task("default", ["lint", "script"], function () {
   console.log("lint successful")
 });

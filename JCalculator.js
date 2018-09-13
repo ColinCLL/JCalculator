@@ -7,9 +7,9 @@
   // 原型赋值，便于压缩
   var ArrayProto = Array.prototype, ObjProto = Object.prototype;
   var push = ArrayProto.push
-    slice = ArrayProto.slice,
-    toString = ObjProto.toString,
-    hasOwnProperty = ObjProto.hasOwnProperty;
+  slice = ArrayProto.slice,
+  toString = ObjProto.toString,
+  hasOwnProperty = ObjProto.hasOwnProperty;
   // 定义了一些ECMAScript 5方法
   var nativeIsArray = Array.isArray,
     nativeKeys = Object.keys,
@@ -863,7 +863,7 @@
 
   jc.map(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Symbol', 'Map', 'WeakMap', 'Set', 'WeakSet'], function (name) {
     jc['is' + name] = function (val) {
-      return toString.call(val) === '[object ' + name + ']';
+      return {}.toString.call(val) === '[object ' + name + ']';
     };
   });
 
