@@ -182,6 +182,45 @@
   }
 
   /**
+  * treeDic
+  * 生成树查询字典
+  *
+  * @public
+  * @param data 数据
+  * @param {String|Object} option 相关配置项
+  */
+  jc.treeDic = function (data, option) {
+    var defaultOption = {
+      id: "id",
+      children: "children",
+      deleteEmptyChildren: true,
+    }
+    if (jc.isObject(option)) jc.extend(defaultOption, option)
+    if (jc.isObject(data)) data = [data]
+    var treeObj = {}
+
+    function query(tree) {
+      tree.map(row => {
+        treeObj[row[defaultOption.id]] = row
+        if (
+            (
+              !row[defaultOption.children]
+              || row[defaultOption.children].length == 0
+            )
+            && defaultOption.deleteEmptyChildren
+          ) {
+          delete row.children
+        } else {
+          query(row.children)
+        }
+      })
+    }
+
+    query(data)
+    return treeObj
+  }
+
+  /**
   * extend
   * 此段偷懒，大部分引用了jquery的extend，用法和jq一致;
   *
@@ -362,7 +401,6 @@
     if (!data || data.length == 0) return data;
     var obj = {};
     jc.map(data, function (row) {
-      console.log(row.key)
       obj[row[key]] = row;
     });
     return obj;

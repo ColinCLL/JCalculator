@@ -7,6 +7,9 @@ page-EN: null;
 
 any issue about document: https://github.com/ColinCLL/jc-doc/issues
 
+## npm
+npm i jcalculator --save
+
 ## Demo
 ```javascript
 var data = [
