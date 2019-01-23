@@ -175,7 +175,7 @@ describe("test tree", function () {
     data.should.deepEqual({ "children": [{ "id": 1, "pid": 0, "name": "china", "children": [{ "id": 2, "pid": 1, "name": "guangdong", "children": [{ "id": 3, "pid": 2, "name": "shenzhen" }, { "id": 4, "pid": 2, "name": "guangzhou" }] }] }, { "id": 5, "pid": 0, "name": "USA", "children": [{ "id": 6, "pid": 5, "name": "AK" }] }] });
   });
 
-  it("test jc.tree，without enter children", function () {
+  it("test jc.tree, without enter children", function () {
     var table = [
       { id: 1, pid: 0, name: "china" },
       { id: 2, pid: 1, name: "guangdong" },
@@ -192,7 +192,7 @@ describe("test tree", function () {
     data.should.deepEqual({ "children": [{ "id": 1, "pid": 0, "name": "china", "children": [{ "id": 2, "pid": 1, "name": "guangdong", "children": [{ "id": 3, "pid": 2, "name": "shenzhen" }, { "id": 4, "pid": 2, "name": "guangzhou" }] }] }, { "id": 5, "pid": 0, "name": "USA", "children": [{ "id": 6, "pid": 5, "name": "AK" }] }] });
   });
 
-  it("test jc.tree，retain is string", function () {
+  it("test jc.tree, retain is string", function () {
     var table = [
       { id: 1, pid: 0, name: "china", value: 1231 },
       { id: 2, pid: 1, name: "guangdong", value: 4321 },
@@ -210,7 +210,7 @@ describe("test tree", function () {
     data.should.deepEqual({ "children": [{ "id": 1, "pid": 0, "name": "china", "children": [{ "id": 2, "pid": 1, "name": "guangdong", "children": [{ "id": 3, "pid": 2, "name": "shenzhen" }, { "id": 4, "pid": 2, "name": "guangzhou" }] }] }, { "id": 5, "pid": 0, "name": "USA", "children": [{ "id": 6, "pid": 5, "name": "AK" }] }] });
   });
 
-  it("test jc.tree，retain is array", function () {
+  it("test jc.tree, retain is array", function () {
     var table = [
       { id: 1, pid: 0, name: "china", value: 1231 },
       { id: 2, pid: 1, name: "guangdong", value: 4321 },
@@ -273,7 +273,7 @@ describe("test tree", function () {
     });
   });
 
-  it("test jc.tree，has root row", function () {
+  it("test jc.tree, has root row", function () {
     var table = [
       { id: 0, pid: null, name: "world", value: 1231 },
       { id: 1, pid: 0, name: "china", value: 1231 },
@@ -346,7 +346,7 @@ describe("test tree", function () {
     });
   });
 
-  it("test jc.tree，retain is object", function () {
+  it("test jc.tree, retain is object", function () {
     var table = [
       { id: 1, pid: 0, name: "china", value: 1231 },
       { id: 2, pid: 1, name: "guangdong", value: 4321 },
@@ -414,7 +414,7 @@ describe("test tree", function () {
     });
   });
 
-  it("test jc.tree,dont change table", function () {
+  it("test jc.tree, dont change table", function () {
     var table = [
       { id: 1, pid: 0, name: "china" },
       { id: 2, pid: 1, name: "guangdong" },
@@ -438,6 +438,42 @@ describe("test tree", function () {
       { id: 6, pid: 5, name: "AK" }
     ]);
   });
+
+  it("test jc.treeFilter", function () {
+    var json = [{ "id": 1, "pid": 0, "name": "china", "children": [{ "id": 2, "pid": 1, "name": "guangdong", "children": [{ "id": 3, "pid": 2, "name": "shenzhen" }, { "id": 4, "pid": 2, "name": "guangzhou" }] }] }, { "id": 5, "pid": 0, "name": "USA", "children": [{ "id": 6, "pid": 5, "name": "AK" }] }];
+    var data = jc.treeFilter(json, {
+      filter (row) {
+        return parseInt(row.id) < 3
+      }
+    });
+    data.should.deepEqual({
+      "children": [{
+        "id": 1,
+        "pid": 0,
+        "name": "china",
+        "children": [
+          {
+            "id": 2,
+            "pid": 1,
+            "name": "guangdong",
+            "children": [
+              {
+                "id": 3,
+                "pid": 2,
+                "name": "shenzhen"
+              },
+              {
+                "id": 4,
+                "pid": 2,
+                "name": "guangzhou"
+              }
+            ]
+          }
+        ]
+      }]
+    });
+  });
+
 
 
 })

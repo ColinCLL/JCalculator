@@ -177,7 +177,10 @@
       }
     })
 
-    if (jc.isObjEmpty(root)) root[option.children] = group[option.root];
+    if (jc.isObjEmpty(root)) {
+      root[option.children] = group[option.root];
+      root[option.id] = option.root;
+    }
     return root
   }
 
@@ -196,11 +199,11 @@
       deleteEmptyChildren: true,
     }
     if (jc.isObject(option)) jc.extend(defaultOption, option)
-    if (jc.isObject(data)) data = [data]
+    if (jc.isObject(data)) data = [].push(data)
     var treeObj = {}
 
     function query(tree) {
-      tree.map(row => {
+      tree.map(function (row) {
         treeObj[row[defaultOption.id]] = row
         if (
             (
@@ -218,6 +221,53 @@
 
     query(data)
     return treeObj
+  }
+
+  /**
+  * treeFilter
+  * 生成树查询字典
+  *
+  * @public
+  * @param data 数据
+  * @param {String|Object} option 相关配置项
+  */
+  jc.treeFilter = function (data, option) {
+    var defaultOption = {
+      root: "0",
+      id: "id",
+      parent: "pid",
+      children: "children",
+      deleteEmptyChildren: true,
+    }
+    if (jc.isObject(option)) jc.extend(defaultOption, option)
+    if (jc.isObject(data)) data = [].push(data)
+    data = jc.extend([], data)
+    var treeArr = []
+    // var treeObj = {}
+
+    function query(tree) {
+      tree.map(function (row) {
+        treeArr.push(row)
+        // treeObj[row[defaultOption.id]] = row
+        if (
+          (
+            !row[defaultOption.children]
+            || row[defaultOption.children].length == 0
+          )
+          && defaultOption.deleteEmptyChildren
+        ) {
+          delete row.children
+        } else {
+          query(row.children)
+        }
+      })
+    }
+
+    query(data)
+
+    var filterArr = jc.where(treeArr, defaultOption.filter)
+    var newTree = jc.tree(filterArr, defaultOption)
+    return newTree
   }
 
   /**
