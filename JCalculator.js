@@ -179,7 +179,6 @@
 
     if (jc.isObjEmpty(root)) {
       root[option.children] = group[option.root];
-      root[option.id] = option.root;
     }
     return root
   }
@@ -199,7 +198,7 @@
       deleteEmptyChildren: true,
     }
     if (jc.isObject(option)) jc.extend(defaultOption, option)
-    if (jc.isObject(data)) data = [].push(data)
+    if (jc.isObject(data)) data = [data]
     var treeObj = {}
 
     function query(tree) {
@@ -240,7 +239,7 @@
       deleteEmptyChildren: true,
     }
     if (jc.isObject(option)) jc.extend(defaultOption, option)
-    if (jc.isObject(data)) data = [].push(data)
+    if (jc.isObject(data)) data = [data]
     data = jc.extend([], data)
     var treeArr = []
     // var treeObj = {}
