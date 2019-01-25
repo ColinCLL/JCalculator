@@ -189,7 +189,7 @@
   *
   * @public
   * @param data 数据
-  * @param {String|Object} option 相关配置项
+  * @param {Object} option 相关配置项
   */
   jc.treeDic = function (data, option) {
     var defaultOption = {
@@ -228,7 +228,7 @@
   *
   * @public
   * @param data 数据
-  * @param {String|Object} option 相关配置项
+  * @param {Object} option 相关配置项
   */
   jc.treeFilter = function (data, option) {
     var defaultOption = {
@@ -267,6 +267,49 @@
     var filterArr = jc.where(treeArr, defaultOption.filter)
     var newTree = jc.tree(filterArr, defaultOption)
     return newTree
+  }
+
+  /**
+  * treeMap
+  * 生成树查询字典
+  *
+  * @public
+  * @param data 数据
+  * @param {Object} option 相关配置项
+  */
+  jc.treeMap = function (data, option) {
+    var defaultOption = {
+      root: "0",
+      id: "id",
+      parent: "pid",
+      children: "children",
+      deleteEmptyChildren: true,
+      map: function (row) {
+        return row
+      }
+    }
+    if (jc.isObject(option)) jc.extend(defaultOption, option)
+    var root = jc.isObject(data) ? [data] : data
+    function query(tree) {
+      tree.map(function (row) {
+        defaultOption.map(row)
+        if (
+          (
+            !row[defaultOption.children]
+            || row[defaultOption.children].length == 0
+          )
+          && defaultOption.deleteEmptyChildren
+        ) {
+          delete row.children
+        } else {
+          query(row.children)
+        }
+      })
+    }
+
+    query(root)
+
+    return data
   }
 
   /**

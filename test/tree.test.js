@@ -474,6 +474,105 @@ describe("test tree", function () {
     });
   });
 
+  it("test jc.treeMap, root is array", function () {
+    var json = [{ "id": 1, "pid": 0, "name": "china", "children": [{ "id": 2, "pid": 1, "name": "guangdong", "children": [{ "id": 3, "pid": 2, "name": "shenzhen" }, { "id": 4, "pid": 2, "name": "guangzhou" }] }] }];
+    var data = jc.treeMap(json, {
+      map(row) {
+        row.test = "test"
+        return row
+      }
+    });
+    data.should.deepEqual([{
+      "id": 1,
+      "pid": 0,
+      "name": "china",
+      "test": "test",
+      "children": [
+        {
+          "id": 2,
+          "pid": 1,
+          "name": "guangdong",
+          "test": "test",
+          "children": [
+            {
+              "id": 3,
+              "pid": 2,
+              "name": "shenzhen",
+              "test": "test",
+            },
+            {
+              "id": 4,
+              "pid": 2,
+              "name": "guangzhou",
+              "test": "test",
+            }
+          ]
+        }
+      ]
+    }]);
+  });
+
+  it("test jc.treeMap, root is object", function () {
+    var json = json = {
+      "id": 1,
+      "pid": 0,
+      "name": "china",
+      "children": [
+        {
+          "id": 2,
+          "pid": 1,
+          "name": "guangdong",
+          "children": [
+            {
+              "id": 3,
+              "pid": 2,
+              "name": "shenzhen"
+            },
+            {
+              "id": 4,
+              "pid": 2,
+              "name": "guangzhou"
+            }
+          ]
+        }
+      ]
+    };
+    var data = jc.treeMap(json, {
+      map(row) {
+        row.test = "test"
+        return row
+      }
+    });
+    data.should.deepEqual({
+      "id": 1,
+      "pid": 0,
+      "name": "china",
+      "test": "test",
+      "children": [
+        {
+          "id": 2,
+          "pid": 1,
+          "name": "guangdong",
+          "test": "test",
+          "children": [
+            {
+              "id": 3,
+              "pid": 2,
+              "name": "shenzhen",
+              "test": "test",
+            },
+            {
+              "id": 4,
+              "pid": 2,
+              "name": "guangzhou",
+              "test": "test",
+            }
+          ]
+        }
+      ]
+    });
+  });
+
 
 
 })
