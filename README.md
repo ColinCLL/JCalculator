@@ -1,4 +1,4 @@
-# JCalculator 1.1.1
+# JCalculator
 JCalculator is kind of processing data library for javascript. It supports data manipulation of sql, tree, spaceFix and so on.
 
 page-CN: https://colincll.github.io/jc-doc/
@@ -36,7 +36,7 @@ var test = jc.sql({
 })
 console.log(test);
 /* output: [
-    {"name":"apple","sum_sell":21},
-    {"name":"banana","sum_sell":9}
-  ]*/
+  {"name":"apple","sum_sell":21},
+  {"name":"banana","sum_sell":9}
+]*/
 ```

@@ -211,9 +211,9 @@
             )
             && defaultOption.deleteEmptyChildren
           ) {
-          delete row.children
+          delete row[defaultOption.children]
         } else {
-          query(row.children)
+          query(row[defaultOption.children])
         }
       })
     }
@@ -255,9 +255,9 @@
           )
           && defaultOption.deleteEmptyChildren
         ) {
-          delete row.children
+          delete row[defaultOption.children]
         } else {
-          query(row.children)
+          query(row[defaultOption.children])
         }
       })
     }
@@ -300,9 +300,9 @@
           )
           && defaultOption.deleteEmptyChildren
         ) {
-          delete row.children
+          delete row[defaultOption.children]
         } else {
-          query(row.children)
+          query(row[defaultOption.children])
         }
       })
     }
@@ -311,6 +311,99 @@
 
     return data
   }
+
+
+  /**
+  * treeSearch
+  * 生成树查询字典
+  *
+  * @public
+  * @param data 数据
+  * @param {Object} option 相关配置项
+  */
+  jc.treeSearch = function (data, option) {
+    var defaultOption = {
+      // root: "0",
+      // id: "id",
+      // parent: "pid",
+      children: "children",
+      search: {}
+    }
+    if (jc.isObject(option)) jc.extend(defaultOption, option)
+    var root = jc.isObject(data) ? [data] : data
+    var searchArr = []
+    function query(tree) {
+      tree.map(function (row) {
+        var search = defaultOption.search
+        // var flag = true
+        var data = jc.where([row], search)
+        if (data.length > 0) {
+          searchArr.push (row)
+        }
+        // for (var key in search) {
+        //   if (search[key] != row[key]) {
+        //     flag = false
+        //     break;
+        //   }
+        // }
+        // if (flag) searchArr.push(row)
+        if (
+          (
+            !row[defaultOption.children]
+            || row[defaultOption.children].length == 0
+          )
+          // && defaultOption.deleteEmptyChildren
+        ) {
+          // delete row[defaultOption.children]
+        } else {
+          query(row[defaultOption.children])
+        }
+      })
+    }
+
+    query(root)
+
+    return searchArr
+  }
+
+
+  /**
+  * treePath
+  * 生成树查询字典
+  *
+  * @public
+  * @param data 数据
+  * @param {Object} option 相关配置项
+  */
+  jc.treePath = function (data, option) {
+    var defaultOption = {
+      root: "0",
+      id: "id",
+      parent: "pid",
+      children: "children",
+      path: ""
+    }
+    if (jc.isObject(option)) jc.extend(defaultOption, option)
+    var dic = jc.treeDic(data, defaultOption)
+    var pathArr = []
+    function query(path) {
+      if (dic[path]) {
+        pathArr.unshift(dic[path])
+        if (dic[path][defaultOption.parent]) {
+          query(dic[path][defaultOption.parent])
+        } else {
+          return
+        }
+      } else {
+        return
+      }
+    }
+
+    query(defaultOption.path)
+
+    return pathArr
+  }
+
 
   /**
   * extend

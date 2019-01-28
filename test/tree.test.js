@@ -513,7 +513,7 @@ describe("test tree", function () {
   });
 
   it("test jc.treeMap, root is object", function () {
-    var json = json = {
+    var json = {
       "id": 1,
       "pid": 0,
       "name": "china",
@@ -573,6 +573,176 @@ describe("test tree", function () {
     });
   });
 
+  it("test jc.treeSearch, root is object and search is object", function () {
+    var json = {
+      "id": 1,
+      "pid": 0,
+      "name": "china",
+      "children": [
+        {
+          "id": 2,
+          "pid": 1,
+          "name": "guangdong",
+          "children": [
+            {
+              "id": 3,
+              "pid": 2,
+              "name": "shenzhen"
+            },
+            {
+              "id": 4,
+              "pid": 2,
+              "name": "guangzhou"
+            }
+          ]
+        }
+      ]
+    };
+    var data = jc.treeSearch(json, {
+      search: {id: 4},
+    });
+    data.should.deepEqual([{
+      "id": 4,
+      "pid": 2,
+      "name": "guangzhou"
+    }]);
+  });
+
+  it("test jc.treeSearch, search is function", function () {
+    var json = [{
+      "id": 1,
+      "pid": 0,
+      "name": "china",
+      "children": [
+        {
+          "id": 2,
+          "pid": 1,
+          "name": "guangdong",
+          "children": [
+            {
+              "id": 3,
+              "pid": 2,
+              "name": "shenzhen"
+            },
+            {
+              "id": 4,
+              "pid": 2,
+              "name": "guangzhou"
+            }
+          ]
+        }
+      ]
+    }];
+    var data = jc.treeSearch(json, {
+      search: function (row) {
+        return row.id >= 2
+      }
+    });
+    data.should.deepEqual([{
+      "id": 2,
+      "pid": 1,
+      "name": "guangdong",
+      "children": [
+        {
+          "id": 3,
+          "pid": 2,
+          "name": "shenzhen"
+        },
+        {
+          "id": 4,
+          "pid": 2,
+          "name": "guangzhou"
+        }
+      ]},
+      {
+        "id": 3,
+        "pid": 2,
+        "name": "shenzhen"
+      },
+      {
+        "id": 4,
+        "pid": 2,
+        "name": "guangzhou"
+      }]);
+  });
+
+  it("test jc.treePath", function () {
+    var json = [{
+      "id": 1,
+      "pid": 0,
+      "name": "china",
+      "children": [
+        {
+          "id": 2,
+          "pid": 1,
+          "name": "guangdong",
+          "children": [
+            {
+              "id": 3,
+              "pid": 2,
+              "name": "shenzhen"
+            },
+            {
+              "id": 4,
+              "pid": 2,
+              "name": "guangzhou"
+            }
+          ]
+        }
+      ]
+    }];
+    var data = jc.treePath(json, {
+      path: 4
+    });
+    data.should.deepEqual([
+    {
+      "id": 1,
+      "pid": 0,
+      "name": "china",
+      "children": [
+        {
+          "id": 2,
+          "pid": 1,
+          "name": "guangdong",
+          "children": [
+            {
+              "id": 3,
+              "pid": 2,
+              "name": "shenzhen"
+            },
+            {
+              "id": 4,
+              "pid": 2,
+              "name": "guangzhou"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "pid": 1,
+      "name": "guangdong",
+      "children": [
+        {
+          "id": 3,
+          "pid": 2,
+          "name": "shenzhen"
+        },
+        {
+          "id": 4,
+          "pid": 2,
+          "name": "guangzhou"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "pid": 2,
+      "name": "guangzhou"
+    }
+  ]);
+  });
 
 
 })

@@ -2,7 +2,7 @@
   "name": "jcalculator",
   "version": "1.2.1",
   "description": "json calculator for javascript",
-  "main": "JCalculator.js",
+  "main": "JCalculator.min.js",
   "scripts": {
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha"
   },
