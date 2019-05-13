@@ -6,7 +6,7 @@
   var previousjc = root.jc;
   // 原型赋值，便于压缩
   var ArrayProto = Array.prototype, ObjProto = Object.prototype;
-  var push = ArrayProto.push
+  var push = ArrayProto.push,
   slice = ArrayProto.slice,
   toString = ObjProto.toString,
   hasOwnProperty = ObjProto.hasOwnProperty;
