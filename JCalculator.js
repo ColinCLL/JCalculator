@@ -248,17 +248,11 @@
       tree.map(function (row) {
         treeArr.push(row)
         // treeObj[row[defaultOption.id]] = row
-        if (
-          (
-            !row[defaultOption.children]
-            || row[defaultOption.children].length == 0
-          )
-          && defaultOption.deleteEmptyChildren
-        ) {
-          delete row[defaultOption.children]
-        } else {
-          query(row[defaultOption.children])
+        if (row[defaultOption.children] && row[defaultOption.children].length > 0) {
+          var children = row[defaultOption.children]
+          query(children)
         }
+        delete row[defaultOption.children]
       })
     }
 

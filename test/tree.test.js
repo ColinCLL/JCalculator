@@ -455,23 +455,90 @@ describe("test tree", function () {
           {
             "id": 2,
             "pid": 1,
-            "name": "guangdong",
-            "children": [
-              {
-                "id": 3,
-                "pid": 2,
-                "name": "shenzhen"
-              },
-              {
-                "id": 4,
-                "pid": 2,
-                "name": "guangzhou"
-              }
-            ]
+            "name": "guangdong"
           }
         ]
       }]
     });
+  });
+
+
+  it("test jc.treeFilter, only one children node", function () {
+    var json = [
+      {
+        "folderId": "1",
+        "label": "用户目录",
+        "pid": "0",
+        "children": [
+          {
+            "folderId": "10089",
+            "label": "admin",
+            "pid": "1",
+            "children": [
+              {
+                "folderId": "10094",
+                "label": "333111",
+                "pid": "10089",
+                "children": null,
+              },
+              {
+                "folderId": "10116",
+                "label": "A",
+                "pid": "10089",
+                "children": [
+                  {
+                    "folderId": "10117",
+                    "label": "B",
+                    "pid": "10116",
+                    "children": [
+                      {
+                        "folderId": "10118",
+                        "label": "C",
+                        "pid": "10117",
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+    
+    
+    var data = jc.treeFilter(json, {
+      id: "folderId",
+      filter (row) {
+        return row.folderId != "10117"
+      }
+    });
+    data.children.should.deepEqual([
+      {
+        "folderId": "1",
+        "label": "用户目录",
+        "pid": "0",
+        "children": [
+          {
+            "folderId": "10089",
+            "label": "admin",
+            "pid": "1",
+            "children": [
+              {
+                "folderId": "10094",
+                "label": "333111",
+                "pid": "10089",
+              },
+              {
+                "folderId": "10116",
+                "label": "A",
+                "pid": "10089"
+              }
+            ]
+          }
+        ]
+      }
+    ]);
   });
 
   it("test jc.treeMap, root is array", function () {
