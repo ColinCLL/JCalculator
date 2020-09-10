@@ -3,6 +3,8 @@ JCalculator is kind of processing data library for javascript. It supports data 
 
 page-CN: https://colincll.github.io/jc-doc/
 
+国内镜像: http://colincll.gitee.io/jc-doc
+
 page-EN: null;
 
 any issue about document: https://github.com/ColinCLL/jc-doc/issues
