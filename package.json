@@ -4,14 +4,15 @@
   "description": "json calculator for javascript",
   "main": "JCalculator.js",
   "scripts": {
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha",
+    "build-wasm": "cd wasm && emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && emmake make -C build"
   },
   "keywords": [
     "jcalculator",
     "sql for javascript",
     "sql\u001b[D\u001b[D\u001b[Djson",
-    "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
-    "\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[D\u001b[D\u001b[D\u001b[D",
+    "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
+    "\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[D\u001b[D\u001b[D\u001b[D",
     "calculator"
   ],
   "author": "Colin Chen/陈立林",

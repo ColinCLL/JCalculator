@@ -690,7 +690,29 @@
   * @param {groupItem} groupItem 分组过后的一组数据
   * @param {object} operation 选择列的对象键信息，储存各种操作的信息
   */
+  // WebAssembly模块引用
+  var wasmModule = null;
+  
+  // 初始化WebAssembly
+  function initWasm() {
+    if (wasmModule) return Promise.resolve(wasmModule);
+    
+    return fetch('jc_wasm.wasm')
+      .then(response => response.arrayBuffer())
+      .then(bytes => WebAssembly.instantiate(bytes))
+      .then(results => {
+        wasmModule = results.instance;
+        return wasmModule;
+      });
+  }
+  
   function groupCal (groupItem, operation) {
+    // 如果支持WebAssembly且是数值计算，优先使用WASM
+    if (wasmModule && isNumericOperation(operation)) {
+      return groupCalWasm(groupItem, operation);
+    }
+    
+    // 否则使用原始JS实现
     var newRow = {};
     var itemLength = groupItem.length, validLength = {};
     jc.map(groupItem, function (row) {
@@ -752,6 +774,115 @@
       newRow[key] = newRow[key] / validLength[key];
     })
     return newRow;
+  }
+  
+  // WASM版本的分组计算
+  function groupCalWasm(groupItem, operation) {
+    var newRow = {};
+    
+    // 准备输入数据
+    var inputData = prepareWasmInput(groupItem, operation);
+    var output = new Float64Array(5);
+    
+    // 调用WASM函数
+    wasmModule.exports.groupCal(
+      inputData.inputPtr,
+      inputData.inputLen,
+      output,
+      output.length
+    );
+    
+    // 处理输出结果
+    processWasmOutput(newRow, operation, output);
+    
+    return newRow;
+  }
+  
+  // 判断是否是数值计算操作
+  function isNumericOperation(operation) {
+    return !jc.isObjEmpty(operation.sumObj) || 
+           !jc.isObjEmpty(operation.avgObj) ||
+           !jc.isObjEmpty(operation.maxObj) ||
+           !jc.isObjEmpty(operation.minObj);
+  }
+  
+  // 准备WASM输入数据
+  function prepareWasmInput(groupItem, operation) {
+    // 提取需要计算的数值字段
+    var fields = [];
+    
+    // 收集所有需要计算的字段
+    jc.forIn(operation.sumObj || {}, function(key) {
+      fields.push(operation.sumObj[key]);
+    });
+    jc.forIn(operation.avgObj || {}, function(key) {
+      fields.push(operation.avgObj[key]);
+    });
+    jc.forIn(operation.maxObj || {}, function(key) {
+      fields.push(operation.maxObj[key]);
+    });
+    jc.forIn(operation.minObj || {}, function(key) {
+      fields.push(operation.minObj[key]);
+    });
+    
+    // 去重
+    fields = [...new Set(fields)];
+    
+    // 准备输入数组
+    var input = [];
+    jc.map(groupItem, function(row) {
+      jc.map(fields, function(field) {
+        var val = jc.isFunction(field) ? field(row) : row[field];
+        input.push(val || 0);
+      });
+    });
+    
+    // 分配内存并填充数据
+    var inputPtr = wasmModule.exports.malloc(input.length * 8);
+    var heap = new Float64Array(wasmModule.exports.memory.buffer, inputPtr, input.length);
+    heap.set(input);
+    
+    return {
+      inputPtr: inputPtr,
+      inputLen: input.length
+    };
+  }
+  
+  // 处理WASM输出结果
+  function processWasmOutput(newRow, operation, output) {
+    // 处理sum结果
+    jc.forIn(operation.sumObj || {}, function(key) {
+      newRow[key] = output[0];
+    });
+    
+    // 处理avg结果
+    jc.forIn(operation.avgObj || {}, function(key) {
+      newRow[key] = output[1];
+    });
+    
+    // 处理max结果
+    jc.forIn(operation.maxObj || {}, function(key) {
+      newRow[key] = output[2];
+    });
+    
+    // 处理min结果
+    jc.forIn(operation.minObj || {}, function(key) {
+      newRow[key] = output[3];
+    });
+    
+    // 处理count结果
+    jc.forIn(operation.countObj || {}, function(key) {
+      newRow[key] = output[4];
+    });
+    
+    // 处理col结果
+    if (!jc.isObjEmpty(operation.colObj)) {
+      var firstRow = groupItem[0];
+      jc.forIn(operation.colObj, function(key, val) {
+        var rowVal = jc.isFunction(val) ? val(firstRow) : firstRow[val];
+        newRow[key] = rowVal;
+      });
+    }
   }
   // select部分代码结束
 
